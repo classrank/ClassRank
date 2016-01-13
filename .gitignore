@@ -59,7 +59,7 @@ target/
 # temp directory
 temp/
 
-# virtualenvironemtn files
+# virtualenvironment files
 /bin
 lib64
 pyvenv.cfg
