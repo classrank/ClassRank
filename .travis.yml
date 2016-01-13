@@ -1,4 +1,5 @@
 language: python
+
 python:
     - 3.4
     - 3.5
@@ -21,6 +22,5 @@ before_install:  # wonky anaconda shim to install numpy scipy
     - source activate test
     - conda install --yes numpy scipy pip # install numpy and scipy via anaconda to get around travis's issues
     - pip install -r requirements.txt
- 
-script:
-    - nosetests
+
+script: nosetests
