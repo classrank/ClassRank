@@ -58,3 +58,8 @@ target/
 
 # temp directory
 temp/
+
+# virtualenvironemtn files
+/bin
+lib64
+pyvenv.cfg
