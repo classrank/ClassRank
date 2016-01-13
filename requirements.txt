@@ -3,3 +3,4 @@ SQLAlchemy
 numpy
 scipy
 tornado
+scikit-learn
