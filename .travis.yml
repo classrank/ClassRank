@@ -17,7 +17,7 @@ before_install:  # wonky anaconda shim to install numpy scipy
     - sudo rm -rf /dev/shm
     - sudo ln -s /run/shm /dev/shm
 
- install:
+install:
     - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION
     - source activate test
     - conda install --yes numpy scipy pip # install numpy and scipy via anaconda to get around travis's issues
