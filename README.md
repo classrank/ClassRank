@@ -1,5 +1,6 @@
 # ClassRank
 Analytics for University Courses
+[![Build Status](https://travis-ci.org/classrank/ClassRank.svg)](https://travis-ci.org/classrank/ClassRank)
 
 ##Installation
 

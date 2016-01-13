@@ -4,3 +4,7 @@ numpy
 scipy
 tornado
 scikit-learn
+
+# testing files
+coverage
+nose
