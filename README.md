@@ -1,6 +1,9 @@
 # ClassRank
 Analytics for University Courses
-[![Build Status](https://travis-ci.org/classrank/ClassRank.svg)](https://travis-ci.org/classrank/ClassRank)
+
+[![Build Status](https://travis-ci.org/classrank/ClassRank.svg?branch=master)](https://travis-ci.org/classrank/ClassRank)
+[![Coverage Status](https://coveralls.io/repos/classrank/ClassRank/badge.svg?branch=coverage&service=github)](https://coveralls.io/github/classrank/ClassRank?branch=master)
+[![Code Climate](https://codeclimate.com/github/classrank/ClassRank/badges/gpa.svg)](https://codeclimate.com/github/classrank/ClassRank)
 
 ##Installation
 
