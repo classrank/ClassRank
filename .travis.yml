@@ -16,9 +16,8 @@ before_install:
 - sudo rm -rf /dev/shm
 - sudo ln -s /run/shm /dev/shm
 install:
-- conda create --yes -n test python=$TRAVIS_PYTHON_VERSION numpy scipy scikit-learn
+- conda create --yes -n test python=$TRAVIS_PYTHON_VERSION numpy scipy scikit-learn pip
 - source activate test
-- conda install --yes numpy scipy pip
 - pip install -r requirements.txt
 script: nosetests --with-coverage --cover-package=ClassRank
 after_success: coveralls
