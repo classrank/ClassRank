@@ -8,3 +8,4 @@ scikit-learn
 # testing files
 coverage
 nose
+coveralls
