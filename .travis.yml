@@ -16,7 +16,7 @@ before_install:
 - sudo rm -rf /dev/shm
 - sudo ln -s /run/shm /dev/shm
 install:
-    - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION numpy scipy scikit-learn
+- conda create --yes -n test python=$TRAVIS_PYTHON_VERSION numpy scipy scikit-learn
 - source activate test
 - conda install --yes numpy scipy pip
 - pip install -r requirements.txt
