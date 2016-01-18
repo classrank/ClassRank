@@ -1,0 +1,8 @@
+[run]
+
+[report]
+exclude_lines =
+    pragma: no cover
+    Column
+    relationship
+    __tablename__
