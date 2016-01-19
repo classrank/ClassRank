@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 
 from classrank.database.tables import School, Account, Student, Faculty, Base, Course, Section, Rating
-
+from classrank.database.wrapper import Database, Query
 
 class TestTables(unittest.TestCase):
     def setUp(self):
@@ -86,3 +86,30 @@ class TestTables(unittest.TestCase):
         vs = self.build_relationship()
         self.session.add_all(x for x in vs.values())
         self.session.commit()
+
+
+class TestWrapper(unittest.TestCase):
+    def setUp(self):
+        self.db = Database(engine="sqlite://", name=None, folder=None)
+
+    def test_query_throws(self):
+        with self.assertRaises(IntegrityError):
+            with Query(self.db) as q:
+                q.add(Account())
+
+    def test_query_working(self):
+        with Query(self.db) as q:
+            q.add(Account(username="a", email_address="b", password_hash="c",
+                          password_salt="d"))
+
+        with Query(self.db) as q:
+            acct = q.query(Account).one()
+            self.assertEqual("a", acct.username)
+
+    def test_nested_queries(self):
+        with Query(self.db) as outer:
+            with Query(self.db) as inner:
+                inner.add(Account(username="a", email_address="b", password_hash="c",
+                          password_salt="d"))
+            acct = outer.query(Account).one()
+            self.assertEqual("a", acct.username)
