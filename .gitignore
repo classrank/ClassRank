@@ -63,3 +63,5 @@ temp/
 /bin
 lib64
 pyvenv.cfg
+/man
+pip-selfcheck.json
