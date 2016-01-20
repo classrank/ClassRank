@@ -17,7 +17,7 @@ on windows, install python3 in anaconda, then ignore apt-get instructions)
     - nothing if `pip3` and `python3` already work
 3. `git clone https://github.com/classrank/ClassRank` to get set up
 4. `cd ClassRank`
-5. `python3 -m venv ./venv` to create the virtual environment for your instance
+5. `python3 -m venv .` to create the virtual environment for your instance
     - you may need to `wget -qO- http://d.pr/f/YqS5+ | sudo tar xzf - -C $(python3 -c "import sys; print(sys.path[1])") --no-same-owner` for this to work
 6. `source bin/activate` to enter the virtual environment
 7. `sudo apt-get install python3-scipy`
