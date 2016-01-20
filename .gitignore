@@ -63,6 +63,8 @@ temp/
 /bin
 lib64
 pyvenv.cfg
+man
+pip-selfcheck.json
 
 # other stuff
-.idea/
+.idea
