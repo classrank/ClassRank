@@ -1,6 +1,6 @@
-from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()  # single base class instance for joins
 
@@ -32,8 +32,8 @@ class Account(Base):
 class Student(Base):
     __tablename__ = "student"
     uid = Column(Integer, primary_key=True)
-    school_id = Column(Integer, ForeignKey("school.uid"))
-    user_id = Column(Integer, ForeignKey("account.uid"))
+    school_id = Column(Integer, ForeignKey("school.uid"), nullable=False)
+    user_id = Column(Integer, ForeignKey("account.uid"), nullable=False)
     sections = relationship('Section', secondary='rating', backref='student')
 
 
@@ -69,9 +69,11 @@ class Section(Base):
     __tablename__ = "section"
     uid = Column(Integer, primary_key=True)
     professor_id = Column(Integer, ForeignKey("faculty.uid"))
-    course_id = Column(Integer, ForeignKey('course.uid'))
+    course_id = Column(Integer, ForeignKey('course.uid'), nullable=False)
     semester = Column(Integer, nullable=False)
     year = Column(Integer, nullable=False)
+    name = Column(String(16))
+    crn = Column(Integer)
 
 
 class Rating(Base):

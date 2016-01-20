@@ -63,3 +63,6 @@ temp/
 /bin
 lib64
 pyvenv.cfg
+
+# other stuff
+.idea/
