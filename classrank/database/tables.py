@@ -40,7 +40,7 @@ class Student(Base):
 class Faculty(Base):
     __tablename__ = "faculty"
     uid = Column(Integer, primary_key=True)
-    school_id = Column(Integer, ForeignKey("school.uid"))
+    school_id = Column(Integer, ForeignKey("school.uid"), nullable=False)
     user_id = Column(Integer, ForeignKey("account.uid"), nullable=True)
     sections = relationship("Section", backref="professor")
 
