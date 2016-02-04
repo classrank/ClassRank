@@ -1,9 +1,9 @@
-Jinja2
 SQLAlchemy
 numpy
 scipy
 tornado
 scikit-learn
+scrypt
 
 # testing files
 coverage

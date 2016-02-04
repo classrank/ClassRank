@@ -1,11 +1,14 @@
 import unittest
 
+from unittest.mock import patch, Mock, MagicMock
+
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 
 from classrank.database.tables import School, Account, Student, Faculty, Base, Course, Section, Rating
 from classrank.database.wrapper import Database, Query
+
 
 class TestTables(unittest.TestCase):
     def setUp(self):
@@ -113,3 +116,10 @@ class TestWrapper(unittest.TestCase):
                           password_salt="d"))
             acct = outer.query(Account).one()
             self.assertEqual("a", acct.username)
+
+    def test_cleanup(self):
+        with self.assertRaises(TypeError):
+            with Query(self.db) as q:
+                with patch.object(q.session, 'rollback', return_value=5) as mock_rollback:
+                    raise TypeError
+                self.assertEqual(mock_rollback.called, True) 

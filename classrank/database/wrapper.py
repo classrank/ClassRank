@@ -3,7 +3,7 @@ import sqlalchemy.orm
 from classrank.database import tables
 
 class Database:
-    def __init__(self, engine="sqlite:///", name="ClassRank.db", folder="temp"):
+    def __init__(self, engine="sqlite://", name=None, folder=None):
 
         self.account = tables.Account
         self.student = tables.Student
@@ -43,6 +43,7 @@ class Query:
         if exc_type is None:
             self.session.commit()
         else:
+            print(exc_type, "|", exc_val,"|", exc_tb)
             self.session.rollback()
         self.session.close()
 
