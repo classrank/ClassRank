@@ -3,7 +3,7 @@ import classrank.database.wrapper as db
 
 
 class ClassRankApp(tornado.web.Application):
-    def __init__(self, db_connection: tuple, *args, **kwargs):
+    def __init__(self, db_connection: tuple or None, *args, **kwargs):
         """
 
         :param db_connection: tuple of arguments to the database
