@@ -1,0 +1,13 @@
+<html>
+    <head>
+        {% include 'js.html' %}
+        {% include 'css.html' %}
+        <title>{% block title %}ClassRank{% end %}</title>
+        {% block js %}{% end %}
+    </head>
+    <body>
+    {% block content %}
+        Welcome to ClassRank!
+    {% end %}
+    </body>
+</html>

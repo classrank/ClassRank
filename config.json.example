@@ -1,6 +1,4 @@
 {
-    "static_path": "./static",
     "autoreload": true,
-    "template_path": "./template",
     "cookie_secret": "This is actually a secret cookie!986425&(!@"
 }

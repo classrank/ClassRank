@@ -2,4 +2,6 @@ import tornado.web
 
 
 class BaseHandler(tornado.web.RequestHandler):
-    pass
+
+    def initialize(self):
+        self.db = self.application.db

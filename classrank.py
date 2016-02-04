@@ -17,14 +17,17 @@ def parser():
 if __name__ == "__main__":
     parser = parser()
     args = parser.parse_args()
-    settings = dict()
+    settings = {
+        "static_path": os.path.join(os.path.dirname(__file__), "classrank/static"),
+        "template_path": os.path.join(os.path.dirname(__file__), "classrank/templates")
+    }
     try:
         with open(args.settings) as f:
-            settings = json.loads(f)
+            settings.update(json.loads(f.read()))
     except FileNotFoundError:
         # no additional settings file so we ignore
         pass
 
-    app = ClassRankApp(None, routes, settings)
+    app = ClassRankApp(None, routes, **settings)
     app.listen(args.port)
     tornado.ioloop.IOLoop.current().start()
