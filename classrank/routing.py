@@ -1,4 +1,4 @@
-import classrank.models.example_page as example
+import classrank.handlers.example_page as example
 
 routes = [
     (r'/', example.ExampleHandler)
