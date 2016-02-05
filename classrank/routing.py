@@ -1,5 +1,8 @@
-import classrank.handlers.example_page as example
+import classrank.handlers.splash as splash
+import classrank.handlers.auth as auth
 
 routes = [
-    (r'/', example.ExampleHandler)
+    (r'/', splash.SplashHandler),
+    (r'/login/?', auth.LoginHandler),
+    (r'/register/?', auth.RegistrationHandler),
 ]
