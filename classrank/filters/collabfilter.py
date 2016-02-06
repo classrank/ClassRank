@@ -6,17 +6,16 @@ class CollaborativeFilter:
     def __init__(self, data, numRecommendations):
         self.dataset = data
         self.updated = False
-        self.sparsedata = self.sparseifyData()
+        self.sparsedata = None
+        self.sparseifyData()
         self.svd = TruncatedSVD()
         self.model = self.svd.inverse_transform(self.svd.fit_transform(self.sparsedata))
 
     def getRecommendation(self, row, column):
         if(self.updated):
             self.sparseifyData()
-            self.model = self.svd.inverse_transform(self.svd.fit_transform(sparse.dok_matrix(self.sparsedata)))
+            self.model = self.svd.inverse_transform(self.svd.fit_transform(self.sparsedata))
             self.updated = False
-            import pprint
-            pprint.pprint(self.model)
         return self.model[row][column]
 
     def updateValue(self, row, column, value):
@@ -26,7 +25,7 @@ class CollaborativeFilter:
     def forceModelUpdate(self):
         self.updated = False
         self.sparseifyData()
-        self.model = self.svd.inverse_transform(self.svd.fit_transform(sparse.dok_matrix(self.sparsedata)))
+        self.model = self.svd.inverse_transform(self.svd.fit_transform(self.sparsedata))
 
     def sparseifyData(self):
         sparsematrix = sparse.dok_matrix((len(self.dataset), len(self.dataset[0])))
@@ -34,7 +33,7 @@ class CollaborativeFilter:
             for j in range(len(self.dataset[i])):
                 if self.dataset[i][j] is not None:
                     sparsematrix[i, j] = self.dataset[i][j]
-        return sparsematrix
+        self.sparsedata = sparsematrix
 
     def getSparseData(self):
         return self.sparsedata
