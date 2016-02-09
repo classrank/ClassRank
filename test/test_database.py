@@ -1,6 +1,7 @@
+import os
+import shutil
 import unittest
-
-from unittest.mock import patch, Mock, MagicMock
+from unittest.mock import patch
 
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
@@ -122,4 +123,20 @@ class TestWrapper(unittest.TestCase):
             with Query(self.db) as q:
                 with patch.object(q.session, 'rollback', return_value=5) as mock_rollback:
                     raise TypeError
-                self.assertEqual(mock_rollback.called, True) 
+                self.assertEqual(mock_rollback.called, True)
+
+
+class TestDatabaseFile(unittest.TestCase):
+    def setUp(self):
+        os.mkdir("temp")
+        self.db = Database(engine="sqlite:///", name="test.db", folder="temp")
+
+    def test_db_in_file(self):
+        with Query(self.db) as q:
+            q.add(School(name="Gatech", abbreviation="GT"))
+
+        with Query(self.db) as q:
+            self.assertEqual(q.query(School).one().name, "Gatech")
+
+    def tearDown(self):
+        shutil.rmtree("temp")
