@@ -30,3 +30,9 @@ class TestApplication(AsyncHTTPTestCase):
     def test_register(self):
         response = self.fetch("/register")
         self.assertEqual(response.code, 200)
+
+    def test_travis(self):
+        import tornado.netutil
+        import socket
+        
+        [socks] = tornado.netutil.bind_sockets(None, 'localhost', family=socket.AF_INET, reuse_port=False)
