@@ -35,4 +35,7 @@ class TestApplication(AsyncHTTPTestCase):
         import tornado.netutil
         import socket
         
-        [socks] = tornado.netutil.bind_sockets(None, 'localhost', family=socket.AF_INET, reuse_port=False)
+        socks = tornado.netutil.bind_sockets(None, 'localhost', family=socket.AF_INET, reuse_port=False)
+        print(socks)
+        print(dir(socks[0]))
+        self.assertEqual(1, 0)
