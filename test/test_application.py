@@ -31,3 +31,4 @@ class TestApplication(AsyncHTTPTestCase):
     def test_register(self):
         response = self.fetch("/register")
         self.assertEqual(response.code, 200)
+
