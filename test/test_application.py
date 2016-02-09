@@ -21,6 +21,7 @@ class TestApplication(AsyncHTTPTestCase):
     def test_splash(self):
         response = self.fetch("/")
         self.assertEqual(response.code, 200)
+        print(self.get_url("/"))
         self.assertIn("ClassRank".encode('utf-8'), response.body)
 
     def test_login(self):
