@@ -31,7 +31,7 @@ class TestApplication(AsyncHTTPTestCase):
         response = self.fetch("/register")
         self.assertEqual(response.code, 200)
 
-    def test_travis(self):
+    def setUp(self):
         import tornado.netutil
         import socket
         
