@@ -8,7 +8,6 @@ class BaseHandler(tornado.web.RequestHandler):
         self.pages = self.application.settings['pages']
         self.data = {"auth": False, "user": None}
 
-
     def render(self, template_name, **kwargs):
         """
         binds certain global settings so that they are always passed into the template
