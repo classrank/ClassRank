@@ -1,7 +1,8 @@
-import os
-import shutil
 import unittest
-from unittest.mock import patch
+import shutil
+import os
+
+from unittest.mock import patch, Mock, MagicMock
 
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
