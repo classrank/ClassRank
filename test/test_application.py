@@ -14,7 +14,9 @@ class TestApplication(AsyncHTTPTestCase):
             "static_path": os.path.join(os.path.dirname(__file__), "../classrank/static"),
             "template_path": os.path.join(os.path.dirname(__file__),
                                           "../classrank/templates"),
-            "pages": ["Page", "Other Page"]
+            "pages": ["Page", "Other Page"],
+            "cookie_secret": test_cookie_secret,
+            "login_url": "/login"
         }
         return ClassRankApp(None, routes, **self.settings)
 
