@@ -4,7 +4,7 @@
         {% for item in pages %}
             <a class="nav-item nav-link" href="#">{{item}}</a>
         {% end %}
-        {% if data['auth'] %}
+        {% if current_user %}
             <a class="nav-item nav-link" href="#">Logout</a>
         {% else %}
             <a class="nav-item nav-link" href="#">Login</a>

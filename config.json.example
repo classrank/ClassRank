@@ -1,5 +1,6 @@
 {
     "autoreload": true,
     "cookie_secret": "This is actually a secret cookie!986425&(!@",
-    "pages": ["Dashboard", "Search", "Rate", "Privacy", "Settings"]
+    "pages": ["Dashboard", "Search", "Rate", "Privacy", "Settings"],
+    "login_url": "/login"
 }
