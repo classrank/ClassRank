@@ -1,7 +1,8 @@
 import unittest
 from unittest.mock import Mock, MagicMock, patch
-from tornado.web import Application, RequestHandler
-from tornado.testing import AsyncHTTPSTestCase
+
+from tornado.web import RequestHandler
+
 from classrank.handlers import BaseHandler
 
 test_cookie_secret = "secret_cookie"
@@ -15,7 +16,6 @@ class TestBaseHandler(unittest.TestCase):
     def test_base_handler(self):
         handler = BaseHandler(self.app, Mock())
         self.assertEqual(handler.db, "database")
-        self.assertDictEqual(handler.data, {"auth":False, "user": None})
         self.assertEqual(handler.pages, None)
 
         template = "file.html"
@@ -23,4 +23,4 @@ class TestBaseHandler(unittest.TestCase):
             handler.render(template)
             args, kwargs = r.call_args
         self.assertTupleEqual((args, kwargs), (
-            ("file.html",), {"pages": None, "data": {"auth": False, "user": None}}))
+            ("file.html",), {"pages": None}))

@@ -13,9 +13,11 @@
     <body>
         <div class="container">
             {% include 'navbar.html' %}
-            {% block content %}
-                Welcome to ClassRank!
-            {% end %}
+            <div id='content' class='container-fluid m-t-2'>
+                {% block content %}
+                    Welcome to ClassRank!
+                {% end %}
+            </div>
         </div>
     </body>
 </html>

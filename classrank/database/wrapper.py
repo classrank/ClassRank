@@ -1,6 +1,11 @@
 import sqlalchemy
 import sqlalchemy.orm
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import NoResultFound
+
 from classrank.database import tables
+
+IntegrityError = IntegrityError
 
 class Database:
     def __init__(self, engine="sqlite://", name=None, folder=None):
@@ -21,6 +26,9 @@ class Database:
         self.metadata.create_all(self.engine)
         self.Session = sqlalchemy.orm.sessionmaker(bind=self.engine)
 
+    def __getattribute__(self, attr):
+        return object.__getattribute__(self, attr)
+
 
 class Query:
     """
@@ -29,11 +37,6 @@ class Query:
     """
     def __init__(self, db: Database):
         self.db = db
-
-        # lift all tables into the query
-        for attr in ["account", "student", "rating", "course", "section", "faculty",
-                      "school"]:
-            self.__setattr__(attr, self.db.__getattribute__(attr))
 
     def __enter__(self):
         self.session = self.db.Session()

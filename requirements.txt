@@ -4,8 +4,11 @@ scipy
 tornado
 scikit-learn
 scrypt
+wtforms
+wtforms-tornado
 
 # testing files
 coverage
 nose
 coveralls
+pyscrypt
