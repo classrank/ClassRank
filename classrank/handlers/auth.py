@@ -20,15 +20,16 @@ class RegistrationHandler(BaseHandler):
             try:
                 with Query(self.db) as q:
                     q.add(user)
-                    return self.render('login.html')
             except IntegrityError:
                 # TODO: toss an error message up or do this through an api interface
                 # instead of directly
-                return self.render('register.html')
+                pass
             except Exception as e:
                 raise
-        else:
-            return self.render('register.html')
+            else:
+                return self.render('login.html')
+
+        return self.render('register.html')
 
 
 class LoginHandler(BaseHandler):
@@ -49,7 +50,9 @@ class LoginHandler(BaseHandler):
                         self.authorize(user.username)
                         return self.redirect('/welcome')
             except NoResultFound:
-                return self.render("login.html")
+                pass
+        return self.render("login.html")
+
 
     def authorize(self, user):
         if user:
