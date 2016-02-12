@@ -1,13 +1,23 @@
-<html>
+<!DOCTYPE html>
+
+<html lang="en">
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
         {% include 'js.html' %}
         {% include 'css.html' %}
         <title>{% block title %}ClassRank{% end %}</title>
         {% block js %}{% end %}
     </head>
     <body>
-    {% block content %}
-        Welcome to ClassRank!
-    {% end %}
+        <div class="container">
+            {% include 'navbar.html' %}
+            <div id='content' class='container-fluid m-t-2'>
+                {% block content %}
+                    Welcome to ClassRank!
+                {% end %}
+            </div>
+        </div>
     </body>
 </html>
