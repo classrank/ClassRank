@@ -65,9 +65,9 @@ class LogoutHandler(BaseHandler):
     @authenticated
     def get(self):
         self.clear_cookie("user")
-        self.redirect("/")
+        return self.redirect("/")
 
     @authenticated
     def post(self):
         self.clear_cookie("user")
-        self.redirect("/")
+        return self.redirect("/")
