@@ -8,6 +8,7 @@ import tornado.web
 import classrank.app as app
 from classrank.app import ClassRankApp
 from classrank.routing import routes
+from classrank.database.wrapper import Query
 
 
 def parser():
@@ -37,5 +38,11 @@ if __name__ == "__main__":
     print(app.settings['debug'])
 
     app = ClassRankApp(None, routes, **settings)
+
+    with Query(app.db) as q:
+        for table in settings['db_config']:
+            for item in settings['db_config'][table]:
+                q.add(app.db.__getattribute__(table)(**item))
+
     app.listen(args.port)
     tornado.ioloop.IOLoop.current().start()
