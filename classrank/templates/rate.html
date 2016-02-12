@@ -1,0 +1,49 @@
+{% extends base.html %}
+
+{% block content %}
+
+<form action='/rate' method='post'>
+    <fieldset class='form-group'>
+
+        <div class="form-group row">
+          <label for="course_rating_form" class="col-sm-2 form-control-label">Course Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="course_name_form"
+                   placeholder="CS-4641" name='name'>
+          </div>
+        </div>
+
+      <div class="form-group row">
+          <label for="course_section_form" class="col-sm-2 form-control-label">Course Section</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="course_section_form"
+                   placeholder="A" name='section'>
+        </div>
+      </div>
+
+      <div class="form-group row">
+          <label for="course_semester_form" class="col-sm-2 form-control-label">Course Semester</label>
+        <div class="col-sm-10">
+            <input type="radio" id="course_semester_form" name="semester" value="fall" checked> fall
+            <input type="radio" id="course_semester_form" name="semester" value="spring"> spring
+            <input type="radio" id="course_semester_form" name="semester" value="summer"> summer
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="course_rating_form" class="col-sm-2 form-control-label">Rating</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="course_rating_form"
+                 placeholder="1 - 5" name='rating'>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-secondary">Submit</button>
+        </div>
+      </div>
+  </fieldset>
+</form>
+
+{% end %}
