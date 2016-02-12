@@ -22,3 +22,12 @@ class RegistrationForm(Form):
                                    wtfv.EqualTo('password_confirm')])
     password_confirm = fields.StringField(u'password_confirm',
                                           [wtfv.required(), wtfv.Length(min=6, max=128)])
+
+class AddCourse(Form):
+    name = fields.StringField(u'name',
+                              [wtfv.required(), wtfv.Length(min=3, max=128)])
+    abbreviation = fields.StringField(u'name',
+                                      [wtfv.required(), wtfv.Length(min=3, max=25)])
+    description = fields.StringField(u'name', [wtfv.Length(min=0, max=128)])
+    section = fields.StringField(u'name',
+                                 [wtfv.required(), wtfv.Length(min=3, max=25)])
