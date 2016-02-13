@@ -22,7 +22,10 @@ class TestApplication(AsyncHTTPTestCase):
             "cookie_secret": test_cookie_secret,
             "login_url": "/login"
         }
-        return ClassRankApp(None, routes, **self.settings)
+        cr = ClassRankApp(None, routes, **self.settings)
+        with Query(cr.db) as q:
+            q.add(cr.db.school(**{"name":"Georgia Test University", "abbreviation": "test"}))
+        return cr
 
     def test_splash(self):
         response = self.fetch("/")
@@ -89,7 +92,6 @@ class TestApplication(AsyncHTTPTestCase):
             response = self.fetch("/logout", method="GET")
 
         self.assertIn("ClassRank".encode('utf-8'), response.body)
-
 
     def test_register_existing_user(self):
         self.create_example_user()

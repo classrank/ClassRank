@@ -35,14 +35,15 @@ if __name__ == "__main__":
         # no additional settings file so we ignore
         pass
 
-    print(app.settings['debug'])
+    db_config = settings['db_config']
+    del settings['db_config']
+    cr = ClassRankApp(None, routes, **settings)
 
-    app = ClassRankApp(None, routes, **settings)
+    with Query(cr.db) as q:
+        for table in db_config:
+            for item in db_config[table]:
+                q.add(cr.db.__getattribute__(table)(**item))
 
-    with Query(app.db) as q:
-        for table in settings['db_config']:
-            for item in settings['db_config'][table]:
-                q.add(app.db.__getattribute__(table)(**item))
 
-    app.listen(args.port)
+    cr.listen(args.port)
     tornado.ioloop.IOLoop.current().start()
