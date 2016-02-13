@@ -17,7 +17,8 @@ class TestApplication(AsyncHTTPTestCase):
             "static_path": os.path.join(os.path.dirname(__file__), "../classrank/static"),
             "template_path": os.path.join(os.path.dirname(__file__),
                                           "../classrank/templates"),
-            "pages": ["Page", "Other Page"],
+            "logged_in_pages": ["dashboard", "search", "rate", "privacy", "settings", "logout"],
+            "logged_out_pages": ["login", "register"],
             "cookie_secret": test_cookie_secret,
             "login_url": "/login"
         }
@@ -75,18 +76,20 @@ class TestApplication(AsyncHTTPTestCase):
         return body
 
     def test_login_post_success(self):
-        body = self.create_example_user()
-
-        with patch('classrank.handlers._authenticate.hash_pw') as hash_pass:
-            with patch(
-                    'classrank.handlers.BaseHandler.get_current_user') as authenticator:
-                authenticator.return_value = "tester"
-                hash_pass.return_value = "secret"
-
-                response = self.fetch("/login", method="POST", body=body)
+        hash_pass, response = self.login()
 
         self.assertEqual(b"You're allowed here!", response.body)
         self.assertEqual(("password", "salt"), hash_pass.call_args[0])
+
+    def test_logout(self):
+        self.login()
+
+        with patch('classrank.handlers.BaseHandler.get_current_user') as auth:
+            auth.return_value = "tester"
+            response = self.fetch("/logout", method="GET")
+
+        self.assertIn("ClassRank".encode('utf-8'), response.body)
+
 
     def test_register_existing_user(self):
         self.create_example_user()
@@ -96,3 +99,16 @@ class TestApplication(AsyncHTTPTestCase):
         response = self.fetch("/register", method="POST", body=body)
 
         self.assertEqual(self.fetch('/register').body, response.body)
+
+    def login(self):
+        body = self.create_example_user()
+
+        with patch('classrank.handlers._authenticate.hash_pw') as hash_pass:
+            with patch(
+                    'classrank.handlers.BaseHandler.get_current_user') as authenticator:
+                authenticator.return_value = "tester"
+                hash_pass.return_value = "secret"
+
+                return hash_pass, self.fetch("/login", method="POST", body=body)
+
+

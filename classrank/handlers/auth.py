@@ -1,4 +1,5 @@
 import tornado.escape
+from tornado.web import authenticated
 
 from classrank.database.wrapper import Query, NoResultFound, IntegrityError
 from . import BaseHandler
@@ -59,3 +60,14 @@ class LoginHandler(BaseHandler):
             self.set_secure_cookie("user", tornado.escape.json_encode(user))
         else:
             self.clear_cookie("user")
+
+class LogoutHandler(BaseHandler):
+    @authenticated
+    def get(self):
+        self.clear_cookie("user")
+        return self.redirect("/")
+
+    @authenticated
+    def post(self):
+        self.clear_cookie("user")
+        return self.redirect("/")
