@@ -1,8 +1,9 @@
 {
     "autoreload": true,
     "cookie_secret": "This is actually a secret cookie!986425&(!@",
-    "pages": ["Dashboard", "Search", "Rate", "Privacy", "Settings"],
-    "login_url": "/login",
+    "logged_in_pages": ["dashboard", "search", "rate", "privacy", "settings", "logout"],
+    "logged_out_pages": ["login", "register"],
+    "login_url": "/login"
     "db_config": {
         "school": [
             {"name": "Georgia Institute of Technology", "abbreviation": "gatech"}
