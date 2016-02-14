@@ -1,9 +1,22 @@
 {
     "autoreload": true,
+    "debug": true,
     "cookie_secret": "This is actually a secret cookie!986425&(!@",
-    "logged_in_pages": ["dashboard", "search", "rate", "privacy", "settings", "logout"],
-    "logged_out_pages": ["login", "register"],
-    "login_url": "/login"
+    "logged_in_pages": [
+                        {"name": "Dashboard", "url": "dashboard"},
+                        {"name": "Search", "url": "search"},
+                        {"name": "Rate", "url": "rate"},
+                        {"name": "Settings", "url": "settings"},
+                        {"name": "Log Out", "url": "logout"}
+                    ],
+    "logged_out_pages": [
+                        {"name": "Home", "url": ""},
+                        {"name": "About", "url": "about"},
+                        {"name": "Privacy", "url": "privacy"},
+                        {"name": "Security", "url": "security"},
+                        {"name": "Log In", "url": "login"}
+                    ],
+    "login_url": "/login",
     "db_config": {
         "school": [
             {"name": "Georgia Institute of Technology", "abbreviation": "gatech"}
