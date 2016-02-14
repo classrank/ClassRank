@@ -1,6 +1,8 @@
 import unittest
+import copy
 
 from classrank.filters.datawrapper import DataWrapper
+
 class TestDataWrapper(unittest.TestCase):
    
     def setUp(self):
@@ -57,30 +59,32 @@ class TestDataWrapper(unittest.TestCase):
         }
         self.wrapper = DataWrapper(self.dataset)
 
-        def test_create_lookups(self):
-            self.assertIsInstance(self.wrapper.getInstanceLookup(), {})
-            self.assertIsInstance(self.wrapper.getFeatureLookup(), {})
+    def test_create_lookups(self):
+        temp = {}
+        self.assertIsInstance(self.wrapper.getInstanceLookup(), type(temp))
+        self.assertIsInstance(self.wrapper.getFeatureLookup(), type(temp))
 
-        def test_getters(self):
-            self.assertIsInstance(self.wrapper.getInstanceLookup(), {})
-            self.assertNotEqual(self.wrapper.getInstanceLookup(), {})
+    def test_getters(self):
+        temp = {}
+        self.assertIsInstance(self.wrapper.getInstanceLookup(), type(temp))
+        self.assertNotEqual(self.wrapper.getInstanceLookup(), type(temp))
 
-            self.assertIsInstance(self.wrapper.getFeatureLookup(), {})
-            self.assertNotEqual(self.wrapper.getFeatureLookup(), {})
+        self.assertIsInstance(self.wrapper.getFeatureLookup(), type(temp))
+        self.assertNotEqual(self.wrapper.getFeatureLookup(), type(temp))
 
-            self.assertIsEqual(self.wrapper.getDataDict(), self.dataset)
-            
-            self.assertNotEqual(self.wrapper.getData(), [[None],[None],[None],[None],[None],[None],[None]])
+        self.assertEqual(self.wrapper.getDataDict(), self.dataset)
 
-        def test_add_data(self):
-            dataDict = self.wrapper.getDataDict()
-            tempData = self.wrapper.getData()
+        self.assertNotEqual(self.wrapper.getData(), [[None],[None],[None],[None],[None],[None],[None]])
 
-            instance = {'Casey' : { 'Snakes on a Plane': 5.0, 'Superman Returns' : 3.4}}
-
-            self.wrapper.addData(instance)
-            self.assertNotEqual(dataDict, self.wrapper.getDataDict())
-            self.assertNotEqual(tempData, self.wrapper.getData())
-
-        def test_convert_data(self):
-            self.assertNotEqual(self.wrapper.getData(), [[None],[None],[None],[None],[None],[None],[None]])
+    def test_add_data(self):
+        tempData = copy.deepcopy(self.wrapper.getData())
+        tempDataDict = copy.deepcopy(self.wrapper.getDataDict())
+        
+        instance = {'Casey' : { 'Snakes on a Plane': 5.0, 'Superman Returns' : 3.4}}
+        instance['Lisa Rose'] = {'The Night Listener' : 5.0}
+        self.wrapper.addData(instance)
+        self.assertNotEqual(tempDataDict, self.wrapper.getDataDict())
+        self.assertNotEqual(tempData, self.wrapper.getData())
+        
+    def test_convert_data(self):
+        self.assertNotEqual(self.wrapper.getData(), [[None],[None],[None],[None],[None],[None],[None]])
