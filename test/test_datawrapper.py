@@ -2,8 +2,8 @@ import unittest
 
 from classrank.filters.datawrapper import DataWrapper
 class TestDataWrapper(unittest.TestCase):
-    
-    def setup(self):
+   
+    def setUp(self):
         self.dataset = {
             'Lisa Rose': {
                 'Lady in the Water': 2.5,
@@ -55,14 +55,13 @@ class TestDataWrapper(unittest.TestCase):
                 'Superman Returns':4.0
             }
         }
-        
         self.wrapper = DataWrapper(self.dataset)
 
-        def testCreateLookups(self):
+        def test_create_lookups(self):
             self.assertIsInstance(self.wrapper.getInstanceLookup(), {})
             self.assertIsInstance(self.wrapper.getFeatureLookup(), {})
 
-        def testGetters(self):
+        def test_getters(self):
             self.assertIsInstance(self.wrapper.getInstanceLookup(), {})
             self.assertNotEqual(self.wrapper.getInstanceLookup(), {})
 
@@ -73,7 +72,7 @@ class TestDataWrapper(unittest.TestCase):
             
             self.assertNotEqual(self.wrapper.getData(), [[None],[None],[None],[None],[None],[None],[None]])
 
-        def testAddData(self):
+        def test_add_data(self):
             dataDict = self.wrapper.getDataDict()
             tempData = self.wrapper.getData()
 
@@ -83,5 +82,5 @@ class TestDataWrapper(unittest.TestCase):
             self.assertNotEqual(dataDict, self.wrapper.getDataDict())
             self.assertNotEqual(tempData, self.wrapper.getData())
 
-        def testConvertData(self):
+        def test_convert_data(self):
             self.assertNotEqual(self.wrapper.getData(), [[None],[None],[None],[None],[None],[None],[None]])
