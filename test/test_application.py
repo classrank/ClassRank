@@ -75,7 +75,7 @@ class TestApplication(AsyncHTTPTestCase):
     def test_login_post_success(self):
         hash_pass, response = self.login()
 
-        self.assertEqual(b"You're allowed here!", response.body)
+        self.assertIn(b"Welcome to ClassRank!", response.body)
         self.assertEqual(("password", "salt"), hash_pass.call_args[0])
 
     def test_logout(self):
