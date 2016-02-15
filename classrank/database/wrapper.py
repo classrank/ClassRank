@@ -46,7 +46,6 @@ class Query:
         if exc_type is None:
             self.session.commit()
         else:
-            print(exc_type, "|", exc_val,"|", exc_tb)
             self.session.rollback()
         self.session.close()
 
