@@ -5,67 +5,28 @@
 <form action='/register' method='post'>
 
     <fieldset class='form-group'>
+        {% for field in [{'name': 'username', 'type': 'text', 'label': "Username", 'placeholder': "Joshua"},
+                         {'name': 'email', 'type': 'email', 'label': "Email", "placeholder": "joshua@example.edu"},
+                         {'name': 'school', 'type': 'text', 'label': "School", 'placeholder': "gatech"},
+                         {'name': 'password', 'type': 'password', 'label': "Password", 'placeholder': "secret_password"},
+                         {'name': 'password_confirm', 'type': 'password', 'label': "Confirm Password", 'placeholder': "One more time!"}] %}
 
-      <div class="form-group row {% if 'username' in errors %}has-danger{% end %}">
-          {% if errors.get('username', None) %}
-            <div class="alert alert-danger" role="alert">
-                {{ errors['username'][0] }}
-            </div>
-          {% end %}
-          <label for="username_form" class="col-sm-2 form-control-label">Username</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control {% if 'username' in errors %}form-control-danger{% end %}" id="username_form"
-                   placeholder="Username" name='username'>
-        </div>
-      </div>
-
-      <div class="form-group row {% if 'email' in errors %}has-danger{% end %}">
-          {% if errors.get('email', None) %}
-            <div class="alert alert-danger" role="alert">
-                {{ errors['email'][0] }}
-            </div>
-          {% end %}
-          <label for="email_form" class="col-sm-2 form-control-label">Email</label>
-        <div class="col-sm-10">
-            <input type="email" class="form-control {% if 'email' in errors %}form-control-danger{% end %}" id="email_form"
-                   placeholder="name@example.edu" name='email'>
-        </div>
-      </div>
-
-      <div class="form-group row {% if 'school' in errors %}has-danger{% end %}">
-          {% if errors.get('school', None) %}
-            <div class="alert alert-danger" role="alert">
-                {{ errors['school'][0] }}
-            </div>
-          {% end %}
-          <label for="school_form" class="col-sm-2 form-control-label">School</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control {% if 'school' in errors %}form-control-danger{% end %}" id="school_form" placeholder="gatech"
-                   name='school'>
-        </div>
-      </div>
-
-      <div class="form-group row {% if 'password' in errors %}has-danger{% end %}">
-          {% if errors.get('password', None) %}
-            <div class="alert alert-danger" role="alert">
-                {{ errors['password'][0] }}
-            </div>
-          {% end %}
-          <label for="password_form" class="col-sm-2 form-control-label">Password</label>
-        <div class="col-sm-10">
-            <input type="password" class="form-control {% if 'password' in errors %}form-control-danger{% end %}" id="password_form"
-                   placeholder="Password" name='password'>
-        </div>
-      </div>
-
-        <div class="form-group row {% if 'password' in errors %}has-danger{% end %}">
-            <label for="confirm_form" class="col-sm-2 form-control-label">Confirm
-                Password</label>
+        {% comment : `or (field['name']=='password_confirm' and 'password' in errors)` is a kludgy workaround so that both password boxes highlight %}
+          <div class="form-group row {% if field['name'] in errors or (field['name']=='password_confirm' and 'password' in errors) %}has-danger{% end %}">
+              {% if errors.get(field['name'], None) %}
+                <div class="alert alert-danger" role="alert">
+                    {{ errors[field['name']][0] }}
+                </div>
+              {% end %}
+              <label for="{{field['name']}}_form" class="col-sm-2 form-control-label">{{field['label']}}</label>
             <div class="col-sm-10">
-                <input type="password" class="form-control {% if 'password' in errors %}form-control-danger{% end %}" id="confirm_form"
-                       placeholder="One More Time" name='password_confirm'>
-        </div>
-      </div>
+                <input type="{{field['type']}}" class="form-control {% if field['name'] in errors or (field['name']=='password_confirm' and 'password' in errors) %}
+                    form-control-danger
+                {% end %}" id="{{field['name']}}_form"
+                       placeholder="{{field['placeholder']}}" name="{{field['name']}}">
+            </div>
+          </div>
+        {% end %}
 
       <div class="form-group row">
         <div class="col-sm-offset-2 col-sm-10">
