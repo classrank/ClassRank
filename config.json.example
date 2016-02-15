@@ -20,6 +20,54 @@
     "db_config": {
         "school": [
             {"name": "Georgia Institute of Technology", "abbreviation": "gatech"}
+        ],
+        "course": [
+            {"school_id": 1,
+             "name": "CS-4641",
+             "description": "Machine learning",
+             "abbreviation": "CS-4641"
+            },
+            {"school_id": 1,
+             "name": "CS-2110",
+             "description": "Computer organization and programming",
+             "abbreviation": "CS-2110"
+            },
+            {"school_id": 1,
+             "name": "CS-3630",
+             "description": "Introduction to robotics and perception",
+             "abbreviation": "CS-3630"
+            },
+            {"school_id": 1,
+             "name": "MATH-4150",
+             "description": "Number theory",
+             "abbreviation": "MATH-4150"
+            }
+        ],
+        "section": [
+           {"course_id" : 1,
+            "semester": "spring",
+            "year": 2016,
+            "name": "A",
+            "crn": 1
+           },
+           {"course_id" : 2,
+            "semester": "spring",
+            "year": 2016,
+            "name": "A",
+            "crn": 2
+           },
+           {"course_id" : 3,
+            "semester": "spring",
+            "year": 2016,
+            "name": "A",
+            "crn": 3
+           },
+           {"course_id" : 4,
+            "semester": "spring",
+            "year": 2016,
+            "name": "A",
+            "crn": 4
+           }
         ]
     }
 }
