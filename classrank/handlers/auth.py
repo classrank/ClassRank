@@ -53,7 +53,7 @@ class LoginHandler(BaseHandler):
 
                     if authenticate.hash_pw(self.get_argument('password'), s) == h:
                         self.authorize(user.username)
-                        return self.redirect('/welcome')
+                        return self.redirect('/dashboard')
                     else:
                         errors['password'] = ["Incorrect password"]
             except NoResultFound:
