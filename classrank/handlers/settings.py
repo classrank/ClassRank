@@ -18,10 +18,12 @@ class SettingsHandler(BaseHandler):
             email = user.email_address
 
         # populate email field with pre-existing email from database
-        return self.render("settings.html", email=email, errors={})
+        # update_success is True when the page is reloaded upon a successful update
+        return self.render("settings.html", email=email, errors={}, update_success=False)
 
     def post(self):
         errors = dict()
+        success = False
         form = SettingsForm(self.request.arguments)
         current_user = self.__decoded_username()
 
@@ -50,6 +52,8 @@ class SettingsHandler(BaseHandler):
                         # load, so as long as they don't touch it everything is gucci
                         user.email_address = new_email
                         email = new_email #snag it here so we can pass it in in the self.render(...) call
+
+                        success = True
                     else:
                         errors['password'] = ["Incorrect password"]
                         email = user.email_address
@@ -64,7 +68,7 @@ class SettingsHandler(BaseHandler):
                 user = q.query(self.db.account).filter_by(username=current_user).one()
                 email = user.email_address
 
-        return self.render("settings.html", email=email, errors=errors)
+        return self.render("settings.html", email=email, errors=errors, update_success=success)
 
 
     def __decoded_username(self):

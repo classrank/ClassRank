@@ -7,6 +7,13 @@
       {{errors['unknown'][0]}}
     {% end %}
 
+    {% if update_success %}
+    <div class="alert alert-success">
+      Your information has been updated
+    </div>
+    {% end %}
+
+
     <fieldset class='form-group'>
       <div class="form-group row {% if 'password' in errors %}has-danger{% end %}">
         {% if errors.get('password', None) %}
