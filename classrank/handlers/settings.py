@@ -34,32 +34,34 @@ class SettingsHandler(BaseHandler):
                 new_password_confirm = self.get_argument('new_password_confirm')
                 new_email = self.get_argument('new_email')
 
+                # Do the updates in 2 seperate query sessions. The first session updates the
+                # email address. If an exception occurs (i.e., duplicate email), we skip the second session,
+                # causing nothing to update. If we did both updates in the same session, the password would
+                # still update despite the duplicate email problem.
                 with Query(self.db) as q:
                     # first, ensure that current_password is correct
                     user = q.query(self.db.account).filter_by(username=current_user).one()
                     h = user.password_hash
                     s = user.password_salt
+                    email = user.email_address
 
                     if authenticate.hash_pw(current_password, s) == h:
-                        # current password is authenticated, information has been validated.
-                        # now update database with new info
-
-                        # remember, they can omit new password form-- this leaves password unchanged
-                        if len(new_password) > 0:
-                            user.password_hash, user.password_salt = authenticate.create_password(new_password)
-
-                        # they can't omit this form, but it autofills to their current email on page
-                        # load, so as long as they don't touch it everything is gucci
                         user.email_address = new_email
-                        email = new_email #snag it here so we can pass it in in the self.render(...) call
-
-                        success = True
                     else:
                         errors['password'] = ["Incorrect password"]
-                        email = user.email_address
 
-            except Exception as e:
-                errors['unknown'] = [sys.exc_info()[0]]
+                email = new_email #snag it here (if no exception) so we can pass it in in the self.render(...) call
+
+                # if len is 0, they omitted the new password from the form, so no need to update
+                if len(new_password) > 0 and authenticate.hash_pw(current_password, s) == h:
+                    with Query(self.db) as q:
+                        user.password_hash, user.password_salt = authenticate.create_password(new_password)
+
+                if len(errors) == 0:
+                    success = True
+
+            except IntegrityError as e:
+                errors['email'] = ["A user with that email address already exists"]
         else:
             # Invalid forms-- have to re-query the old email address to prepopulate it
             errors = form.errors
