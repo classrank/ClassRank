@@ -3,35 +3,38 @@
 {% block content %}
 
 <form action='/settings' method='post'>
-    <fieldset class='form-group'>
+    {% if errors.get('unknown', None) %}
+      {{errors['unknown'][0]}}
+    {% end %}
 
-      <div class="form-group row">
+    <fieldset class='form-group'>
+      <div class="form-group row {% if 'password' in errors %}has-danger{% end %}">
         {% if errors.get('password', None) %}
             <div class="alert alert-danger" role="alert">
                 {{ errors['password'][0] }}
             </div>
-          {% end %}
+        {% end %}
         <label for="current_password_form" class="col-sm-2 form-control-label">Current Password</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control" id="current_password_form"
+          <input type="password" class="form-control {% if 'password' in errors %}form-control-danger{% end %}" id="current_password_form"
                  placeholder="" name='current_password'>
         </div>
       </div>
 
-      <div class="form-group row">
+      <div class="form-group row {% if 'new_password' in errors %}has-danger{% end %}">
         {% if errors.get('new_password', None) %}
             <div class="alert alert-danger" role="alert">
                 {{ errors['new_password'][0] }}
             </div>
-          {% end %}
+        {% end %}
         <label for="new_password_form" class="col-sm-2 form-control-label">New Password</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control" id="new_password_form"
+          <input type="password" class="form-control {% if 'new_password' in errors %}form-control-danger{% end %}" id="new_password_form"
                  placeholder="" name='new_password'>
         </div>
       </div>
 
-      <div class="form-group row">
+      <div class="form-group row {% if 'new_password_confirm' in errors %}has-danger{% end %}">
         {% if errors.get('new_password_confirm', None) %}
             <div class="alert alert-danger" role="alert">
                 {{ errors['new_password_confirm'][0] }}
@@ -39,12 +42,12 @@
           {% end %}
         <label for="new_password_confirm_form" class="col-sm-2 form-control-label">New Password (Confirm)</label>
         <div class="col-sm-10">
-          <input type="password" class="form-control" id="new_password_confirm_form"
+          <input type="password" class="form-control {% if 'new_password_confirm' in errors %}form-control-danger{% end %}" id="new_password_confirm_form"
                  placeholder="" name='new_password_confirm'>
         </div>
       </div>
 
-      <div class="form-group row">
+      <div class="form-group row {% if 'email' in errors %}has-danger{% end %}">
           {% if errors.get('email', None) %}
             <div class="alert alert-danger" role="alert">
                 {{ errors['email'][0] }}
@@ -52,7 +55,7 @@
           {% end %}
         <label for="new_email_form" class="col-sm-2 form-control-label">Email Address</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="new_email_form"
+          <input type="email" class="form-control {% if 'email' in errors %}form-control-danger{% end %}" id="new_email_form"
                  value="{{email}}" name='new_email'>
         </div>
       </div>

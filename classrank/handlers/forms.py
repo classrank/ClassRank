@@ -1,5 +1,6 @@
 from wtforms.fields import IntegerField, StringField, RadioField, SelectField
 from wtforms import validators as wtfv
+from wtforms.validators import ValidationError
 from wtforms_tornado import Form
 
 """Handles form validation for all pages."""

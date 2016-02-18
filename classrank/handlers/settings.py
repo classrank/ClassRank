@@ -41,14 +41,21 @@ class SettingsHandler(BaseHandler):
                     if authenticate.hash_pw(current_password, s) == h:
                         # current password is authenticated, information has been validated.
                         # now update database with new info
-                        user.password_hash = authenticate.hash_pw(new_password, s)
+
+                        # remember, they can omit new password form-- this leaves password unchanged
+                        if len(new_password) > 0:
+                            user.password_hash = authenticate.hash_pw(new_password, s)
+
+                        # they can't omit this form, but it autofills to their current email on page
+                        # load, so as long as they don't touch it everything is gucci
                         user.email_address = new_email
                         email = new_email #snag it here so we can pass it in in the self.render(...) call
                     else:
                         errors['password'] = ["Incorrect password"]
+                        email = user.email_address
 
             except Exception as e:
-                errors['unknown'] = ["Unexpected error"]
+                errors['unknown'] = [sys.exc_info()[0]]
         else:
             # Invalid forms-- have to re-query the old email address to prepopulate it
             errors = form.errors
