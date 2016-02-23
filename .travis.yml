@@ -1,12 +1,22 @@
 dist: trusty
+
+services: postgres
+
 language: python
+
 python:
 - 3.4
 - 3.5
+
+env:
+- DB=sqlite
+- DB=postgres
+
 notifications:
   email: false
   slack:
     secure: NOCG2XTdrDlRwaZxiGUMSJgufAgeg5rTqy/DPw5BrTK4aPKLflP86ZwS2tvscWY/ikpORKoCJ4I/cvni9YUcC59JqE2gEifIDuW51hDpiEtIFAK2tCD6aFVHpG1tK8oUJF/dE6/1Gmwso6KzNT+6+Xle6mdqtxeb9zAxBDSt4MWCYJfmkpqKOpPa9hYSMwk+TLJpEDlFCnDjJ1YcMyJy9gDa3LY5nIH6xJlVfG4lPyrKSrNgLuhN/EKvF8rgHObQhGOGFhh4HM620T1atml7DNRiRcSgPmKrNQb2TpiuJjvgKI2UyKD6rzbnScGKXd1MHz4kgscqPLTcxqTdmk0bkR7BssN0GV7cYmMcTZL74isJDDc4tboR/FopgrYLQNJAeoZJt6XhM1sJzuqDmfRBz5myjC6iWrjW7o6PCkvyCTCfT8KPv7Bj803F9GAkjReD6Vzs9bd/YSLDlntAFmjNj31ghLY4Opkj91idFP47sueVs4uzr4/WYB1gTZHi3co4SJBYXSypItjB8QwhGFK12vVauXoPL/XjABicMHdoHN0OS/3UK9bBigxlcU9RC7qovqT6EY/eHjNAkj5un5uE0erA8sBgT2+eBmWojkrO8zFu0aN8gaYcKHcbBJ1LS0OC0CjvEyq1qA7o5YDvtnaz3ZvFtz0iD4M4CEN9vT+eJ8M=
+
 before_install:
 - sudo sed -i '/^::1/d' /etc/hosts && sudo sed -i '/^127\.0\.1\.1/d' /etc/hosts
 - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
@@ -16,9 +26,14 @@ before_install:
 - conda update --yes conda
 - sudo rm -rf /dev/shm
 - sudo ln -s /run/shm /dev/shm
+- sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'create database classrank_test' -U postgres; fi"
+- sh -c "if [ '$DB' = 'postgres' ]; then export CONNECTION='postgres://postgres@localhost/classrank_test'; fi"
+
 install:
 - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION numpy scipy scikit-learn pip libgfortran
 - source activate test
 - pip install -r requirements.txt
+
 script: nosetests -c .noserc
+
 after_success: coveralls

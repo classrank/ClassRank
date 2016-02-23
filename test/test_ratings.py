@@ -22,10 +22,9 @@ class TestRatings(AsyncHTTPTestCase):
             "static_path": path.join(path.dirname(__file__), static_path),
             "template_path": path.join(path.dirname(__file__), template_path),
 
-            "logged_in_pages": ["dashboard", "search", "rate",
-                                "privacy", "settings", "logout"],
+            "logged_in_pages": {},
 
-            "logged_out_pages": ["login", "register"],
+            "logged_out_pages": {},
             "cookie_secret": test_cookie_secret,
             "login_url": "/login"
         }
@@ -36,7 +35,8 @@ class TestRatings(AsyncHTTPTestCase):
 
             q.add(cr.db.course(**{"school_id": 1,
                                   "name": "Machine Learning",
-                                  "abbreviation": "CS-4641"}))
+                                  "subject": "CS",
+                                  "number": "4641"}))
 
             q.add(cr.db.section(**{"course_id": 1,
                                    "semester": "spring",
@@ -49,7 +49,8 @@ class TestRatings(AsyncHTTPTestCase):
         """Test success condition of rating."""
         self.register()
         self.login()
-        body = urllib.parse.urlencode({"name": "CS-4641",
+        body = urllib.parse.urlencode({"subject": "CS",
+                                       "number": "4641",
                                        "section": "A",
                                        "semester": "spring",
                                        "rating": "5"})
@@ -73,7 +74,8 @@ class TestRatings(AsyncHTTPTestCase):
         """Test failure if rating a non-existent course."""
         self.register()
         self.login()
-        body = urllib.parse.urlencode({"name": "MATH-4150",
+        body = urllib.parse.urlencode({"subject": "CS",
+                                       "number": "4150",
                                        "section": "A",
                                        "semester": "spring",
                                        "rating": "5"})
