@@ -6,6 +6,7 @@ scikit-learn
 scrypt
 wtforms
 wtforms-tornado
+psycopg2
 
 # testing files
 coverage

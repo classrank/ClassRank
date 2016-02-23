@@ -25,22 +25,26 @@
             {"school_id": 1,
              "name": "CS-4641",
              "description": "Machine learning",
-             "abbreviation": "CS-4641"
+             "number": "4641",
+             "subject": "CS"
             },
             {"school_id": 1,
              "name": "CS-2110",
              "description": "Computer organization and programming",
-             "abbreviation": "CS-2110"
+             "number": "2110",
+             "subject": "CS"
             },
             {"school_id": 1,
              "name": "CS-3630",
              "description": "Introduction to robotics and perception",
-             "abbreviation": "CS-3630"
+             "number": "3630",
+             "subject": "CS"
             },
             {"school_id": 1,
              "name": "MATH-4150",
              "description": "Number theory",
-             "abbreviation": "MATH-4150"
+             "number": "4150",
+             "subject": "MATH"
             }
         ],
         "section": [

@@ -8,7 +8,10 @@ from classrank.database import tables
 IntegrityError = IntegrityError
 
 class Database:
-    def __init__(self, engine="sqlite://", name=None, folder=None):
+    def __init__(self, engine="sqlite://"):
+        """
+        engine: a database connections string
+        """
 
         self.account = tables.Account
         self.student = tables.Student
@@ -17,10 +20,7 @@ class Database:
         self.section = tables.Section
         self.faculty = tables.Faculty
         self.school = tables.School
-        if name == None and folder == None:
-            self.engine = sqlalchemy.create_engine(engine)
-        else:
-            self.engine = sqlalchemy.create_engine(engine + folder + "/" + name)
+        self.engine = sqlalchemy.create_engine(engine)
         self.base = tables.Base
         self.metadata = self.base.metadata
         self.metadata.create_all(self.engine)

@@ -22,7 +22,7 @@ class TestApplication(AsyncHTTPTestCase):
             "cookie_secret": test_cookie_secret,
             "login_url": "/login"
         }
-        cr = ClassRankApp(None, routes, **self.settings)
+        cr = ClassRankApp(os.environ.get("CONNECTION", "sqlite://"), routes, **self.settings)
         with Query(cr.db) as q:
             q.add(cr.db.school(**{"name":"Georgia Test University", "abbreviation": "test"}))
         return cr
@@ -76,7 +76,7 @@ class TestApplication(AsyncHTTPTestCase):
         hash_pass, response = self.login()
 
         self.assertIn(b"Welcome to ClassRank!", response.body)
-        self.assertEqual(("password", "salt"), hash_pass.call_args[0])
+        self.assertEqual(("password", b"salt"), hash_pass.call_args[0])
 
     def test_logout(self):
         self.login()
@@ -87,7 +87,6 @@ class TestApplication(AsyncHTTPTestCase):
 
         self.assertIn("ClassRank".encode('utf-8'), response.body)
 
-
     def create_example_user(self):
         """
         Add's a user to the database and creates corresponding login headers
@@ -96,7 +95,7 @@ class TestApplication(AsyncHTTPTestCase):
         """
         body = urllib.parse.urlencode({"email": "test@test.com", "password": "password"})
         user = self._app.db.account(username="tester", email_address="test@test.com",
-                                    password_hash="secret", password_salt="salt")
+                                    password_hash=b"secret", password_salt=b"salt")
 
         with Query(self._app.db) as db:
             db.add(user)
@@ -110,8 +109,10 @@ class TestApplication(AsyncHTTPTestCase):
             with patch(
                     'classrank.handlers.BaseHandler.get_current_user') as authenticator:
                 authenticator.return_value = "tester"
-                hash_pass.return_value = "secret"
+                hash_pass.return_value = b"secret"
 
                 return hash_pass, self.fetch("/login", method="POST", body=body)
 
-
+    def tearDown(self):
+        self._app.db.metadata.bind = self._app.db.engine
+        self._app.db.metadata.drop_all()

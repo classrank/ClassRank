@@ -48,8 +48,8 @@ class LoginHandler(BaseHandler):
                 with Query(self.db) as q:
                     user = q.query(self.db.account).filter_by(
                         email_address=self.get_argument('email')).one()
-                    h = user.password_hash
-                    s = user.password_salt
+                    h = user.pw_hash
+                    s = user.pw_salt
 
                     if authenticate.hash_pw(self.get_argument('password'), s) == h:
                         self.authorize(user.username)

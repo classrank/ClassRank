@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, LargeBinary
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -22,12 +22,29 @@ class Account(Base):
     uid = Column(Integer, primary_key=True)
     username = Column(String(32), nullable=False, unique=True)
     email_address = Column(String(128), nullable=False, unique=True)
-    password_hash = Column(String(128), nullable=False)
-    password_salt = Column(String(16), nullable=False)
+    password_hash = Column(LargeBinary(128), nullable=False)
+    password_salt = Column(LargeBinary(16), nullable=False)
 
     student = relationship("Student", backref="account", uselist=False)
     faculty = relationship("Faculty", backref="account", uselist=False)
 
+    @property
+    def pw_hash(self):
+        h = None
+        try:
+            h = self.password_hash.tobytes()
+        except AttributeError:
+            h = self.password_hash
+        return h
+
+    @property
+    def pw_salt(self):
+        s = None
+        try:
+            s = self.password_salt.tobytes()
+        except AttributeError:
+            s = self.password_salt
+        return s
 
 class Student(Base):
     __tablename__ = "student"
@@ -61,7 +78,8 @@ class Course(Base):
     school_id = Column(Integer, ForeignKey("school.uid"), nullable=False)
     name = Column(String(64), nullable=False)
     description = Column(String(2000), nullable=True)
-    abbreviation = Column(String(8), nullable=False)
+    number = Column(String(4), nullable=False)
+    subject = Column(String(4), nullable=False)
     sections = relationship("Section", backref="course")
 
 
@@ -70,7 +88,7 @@ class Section(Base):
     uid = Column(Integer, primary_key=True)
     professor_id = Column(Integer, ForeignKey("faculty.uid"))
     course_id = Column(Integer, ForeignKey('course.uid'), nullable=False)
-    semester = Column(Integer, nullable=False)
+    semester = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
     name = Column(String(16))
     crn = Column(Integer)

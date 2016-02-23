@@ -19,6 +19,9 @@ def hash_pw(password, salt):
     if type(password) != bytes:
         password = bytes(password, 'utf-8')
 
+    if type(salt) == memoryview:
+        salt = salt.tobytes()
+
     if debug:
         h = scrypt.hash(password, salt, N=2 ** 4, p=1, r=1, dkLen=buflen)
     else:

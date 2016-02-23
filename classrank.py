@@ -9,6 +9,7 @@ import classrank.app as app
 from classrank.app import ClassRankApp
 from classrank.routing import routes
 from classrank.database.wrapper import Query
+from classrank.database.wrapper import IntegrityError
 
 
 def parser():
@@ -16,6 +17,7 @@ def parser():
     p.add_argument('-p', '--port', default=os.environ.get('port', 8000))
     p.add_argument('-s', '--settings', default=os.environ.get('settings', 'config.json.example'))
     p.add_argument('-d', '--debug', action='store_true')
+    p.add_argument('-c', '--connection', default=os.environ.get('connection', None))
     return p
 
 
@@ -37,12 +39,14 @@ if __name__ == "__main__":
 
     db_config = settings['db_config']
     del settings['db_config']
-    cr = ClassRankApp(None, routes, **settings)
-
-    with Query(cr.db) as q:
-        for table in db_config:
-            for item in db_config[table]:
-                q.add(cr.db.__getattribute__(table)(**item))
+    cr = ClassRankApp(args.connection, routes, **settings)
+    try:
+        with Query(cr.db) as q:
+            for table in db_config:
+                for item in db_config[table]:
+                    q.add(cr.db.__getattribute__(table)(**item))
+    except IntegrityError:
+        pass
 
 
     cr.listen(args.port)
