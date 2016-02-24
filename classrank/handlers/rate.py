@@ -27,7 +27,8 @@ class RateHandler(BaseHandler):
         if form.validate():
             try:
                 # store argument data
-                name = self.get_argument('name')
+                subject = self.get_argument('subject')
+                number = self.get_argument('number')
                 section = self.get_argument('section')
                 semester = self.get_argument('semester')
                 rating = self.get_argument('rating')
@@ -41,7 +42,7 @@ class RateHandler(BaseHandler):
 
                     # get needed course, section, and account info from db
                     # calling 'one()' verifies that one match exists
-                    course = course_q.filter_by(abbreviation=name).one()
+                    course = course_q.filter_by(subject=subject, number=number).one()
 
                     section = section_q.filter_by(course_id=course.uid,
                                                   name=section,
@@ -61,6 +62,7 @@ class RateHandler(BaseHandler):
                     q.query(Rating).filter_by(section=section).one()
                     return self.redirect("/rate")
             except Exception as e:
+                print(e)
                 return self.redirect("/rate")
         else:
             return self.redirect("/rate")

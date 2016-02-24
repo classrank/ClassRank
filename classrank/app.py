@@ -4,7 +4,7 @@ import classrank.database.wrapper as db
 
 
 class ClassRankApp(tornado.web.Application):
-    def __init__(self, db_connection: tuple or None, *args, **kwargs):
+    def __init__(self, db_connection: str or None, *args, **kwargs):
         """
 
         :param db_connection: tuple of arguments to the database
@@ -15,7 +15,7 @@ class ClassRankApp(tornado.web.Application):
         if db_connection is None:
             self.db = db.Database()
         else:
-            self.db = db.Database(*db_connection)
+            self.db = db.Database(db_connection)
 
 
 settings = {'debug': False,}
