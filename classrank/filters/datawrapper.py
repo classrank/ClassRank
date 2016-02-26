@@ -37,7 +37,7 @@ class DataWrapper:
 
     def getData(self, *args):
         if len(args) == 2:
-            return self.dataDict[self.instanceLookup[args[0]]][self.featureLookup[args[1]]]
+            return self.data[self.instanceLookup[args[0]]][self.featureLookup[args[1]]]
         else:
             return self.data
     

@@ -81,6 +81,10 @@ class TestSVDFilter(unittest.TestCase):
 
     def test_get_data_dict(self):
         self.assertEqual(self.data, self.fltr.getDataDict())
+    
+    def test_get_data(self):
+        self.assertIsNot(self.fltr.getData("Gene Seymour", "Snakes on a Plane"), None)
+        self.assertIsInstance(self.fltr.getData(), type([]) )
 
     def test_get_model(self):
         temp = np.array([1])
