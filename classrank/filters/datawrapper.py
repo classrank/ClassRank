@@ -23,7 +23,7 @@ class DataWrapper:
         for instance in self.dataDict:
             for feature in self.dataDict[instance]:
                 self.data[self.instanceLookup[instance]][self.featureLookup[feature]] = self.dataDict[instance][feature]
-
+        
     def addData(self, instances):
         #update the data dictionary
         for instance in instances:
@@ -35,9 +35,12 @@ class DataWrapper:
         self.createLookups()
         self.convertData()
 
-    def getData(self):
-        return self.data
-
+    def getData(self, *args):
+        if len(args) == 2:
+            return self.dataDict[self.instanceLookup[args[0]]][self.featureLookup[args[1]]]
+        else:
+            return self.data
+    
     def getInstanceLookup(self):
         return self.instanceLookup
 
@@ -46,5 +49,9 @@ class DataWrapper:
 
     def getDataDict(self):
         return self.dataDict
+        
+    def getRow(self, instance):
+        return self.instanceLookup[instance]
 
-
+    def getColumn(self, feature):
+        return self.featureLookup[feature]
