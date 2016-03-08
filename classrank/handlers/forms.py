@@ -44,13 +44,9 @@ class RegistrationForm(Form):
 
 class RateForm(Form):
     """Validates form data retrieved from the rating page."""
-    subject = StringField(u'subject',
+    course = StringField(u'course',
                           [wtfv.required(message=required_field_msg),
-                           wtfv.length(min=1, max=6)])
-
-    number = StringField(u'number',
-                         [wtfv.required(message=required_field_msg),
-                          wtfv.length(min=1, max=6)])
+                           wtfv.length(min=4, max=12)])
 
     section = StringField(u'section',
                           [wtfv.required(message=required_field_msg),

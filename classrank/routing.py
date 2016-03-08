@@ -17,5 +17,6 @@ routes = [
 
 
     # api handlers
-    (r'/api/course_name/([\w-]+)?/?', api.SchoolApi)
+    (r'/api/autocomplete/courses/?', api.CourseAutocomplete),
+
 ]
