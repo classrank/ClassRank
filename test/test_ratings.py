@@ -135,7 +135,6 @@ class TestRatings(AsyncHTTPTestCase):
         attempts.
         """
         self.register()
-        self.login()
         rate_body = self.fetch("/rate").body
 
         invalid_forms = [

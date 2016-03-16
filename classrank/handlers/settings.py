@@ -21,6 +21,7 @@ class SettingsHandler(BaseHandler):
         # update_success is True when the page is reloaded upon a successful update
         return self.render("settings.html", email=email, errors={}, update_success=False)
 
+    @authenticated
     def post(self):
         errors = dict()
         success = False
