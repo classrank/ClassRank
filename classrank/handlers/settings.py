@@ -11,11 +11,7 @@ from tornado.web import authenticated
 class SettingsHandler(BaseHandler):
     @authenticated
     def get(self):
-        current_user = self.__decoded_username()
-
-        with Query(self.db) as q:
-            user = q.query(self.db.account).filter_by(username=current_user).one()
-            email = user.email_address
+        email = self._get_current_user_email()
 
         # populate email field with pre-existing email from database
         # update_success is True when the page is reloaded upon a successful update
@@ -66,12 +62,16 @@ class SettingsHandler(BaseHandler):
         else:
             # Invalid forms-- have to re-query the old email address to prepopulate it
             errors = form.errors
-
-            with Query(self.db) as q:
-                user = q.query(self.db.account).filter_by(username=current_user).one()
-                email = user.email_address
+            email = self._get_current_user_email()
 
         return self.render("settings.html", email=email, errors=errors, update_success=success)
+
+    def _get_current_user_email(self):
+        current_user = self.__decoded_username()
+        
+        with Query(self.db) as q:
+            user = q.query(self.db.account).filter_by(username=current_user).one()
+            return user.email_address
 
 
     def __decoded_username(self):
