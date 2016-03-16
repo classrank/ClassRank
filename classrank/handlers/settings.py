@@ -50,12 +50,12 @@ class SettingsHandler(BaseHandler):
                     else:
                         errors['password'] = ["Incorrect password"]
 
-                email = new_email #snag it here (if no exception) so we can pass it in in the self.render(...) call
+                    email = new_email #snag it here (if no exception) so we can pass it in in the self.render(...) call
 
-                # if len is 0, they omitted the new password from the form, so no need to update
-                if len(new_password) > 0 and authenticate.hash_pw(current_password, s) == h:
-                    with Query(self.db) as q:
-                        user.password_hash, user.password_salt = authenticate.create_password(new_password)
+                    # if len is 0, they omitted the new password from the form, so no need to update
+                    if len(new_password) > 0 and authenticate.hash_pw(current_password, s) == h:
+                        with Query(self.db) as q:
+                            user.password_hash, user.password_salt = authenticate.create_password(new_password)
 
                 if len(errors) == 0:
                     success = True
