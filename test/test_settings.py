@@ -1,148 +1,117 @@
-from classrank.app import ClassRankApp
-from classrank.database.wrapper import Query
-from classrank.routing import routes
-from os import path
-from tornado.testing import AsyncHTTPTestCase
+import os
 import urllib.parse
 from unittest.mock import patch
 
-"""Tests the 'add ratings' function of ClassRank."""
+from tornado.testing import AsyncHTTPTestCase
+
+from classrank.app import ClassRankApp
+from classrank.database.wrapper import Query
+from classrank.routing import routes
+from classrank.handlers import _authenticate as authenticate
 
 test_cookie_secret = "secret_cookie"
-static_path = "../classrank/static"
-template_path = "../classrank/templates"
-
-# path to the function 'get_current_user'; for patching purposes
-get_current_user_func_path = "classrank.handlers.BaseHandler.get_current_user"
 
 
-class TestRatings(AsyncHTTPTestCase):
+class TestApplication(AsyncHTTPTestCase):
     def get_app(self):
         self.settings = {
-            "static_path": path.join(path.dirname(__file__), static_path),
-            "template_path": path.join(path.dirname(__file__), template_path),
-
-            "logged_in_pages": ["dashboard", "search", "rate",
-                                "privacy", "settings", "logout"],
-
-            "logged_out_pages": ["login", "register"],
+            "static_path": os.path.join(os.path.dirname(__file__), "../classrank/static"),
+            "template_path": os.path.join(os.path.dirname(__file__),
+                                          "../classrank/templates"),
+            "logged_in_pages": [],
+            "logged_out_pages": [],
             "cookie_secret": test_cookie_secret,
             "login_url": "/login"
         }
         cr = ClassRankApp(None, routes, **self.settings)
         with Query(cr.db) as q:
-            q.add(cr.db.school(**{"name": "Georgia Institute of Technology",
-                                  "abbreviation": "gatech"}))
+            q.add(cr.db.school(**{"name":"Georgia Test University", "abbreviation": "test"}))
+            phash, psalt = authenticate.create_password("password")
+            q.add(cr.db.account(username="andrew", email_address="my@mail.com", password_hash=phash,
+                          password_salt=psalt))
 
-            q.add(cr.db.course(**{"school_id": 1,
-                                  "name": "Machine Learning",
-                                  "abbreviation": "CS-4641"}))
-
-            q.add(cr.db.section(**{"course_id": 1,
-                                   "semester": "spring",
-                                   "year": 2016,
-                                   "name": "A",
-                                   "crn": 1}))
         return cr
 
     def test_wrong_password(self):
-        self.register()
-        meh, response = self.login()
-        self.assertEqual(response.code, 200)
-
-        # body = urllib.parse.urlencode({"current_password": "wrongpass",
-        #                                "new_password": "noupdate",
-        #                                "new_password_confirm": "noupdate",
-        #                                "new_email": "no@update.com"})
+        body = urllib.parse.urlencode({"current_password": "wrongpass",
+                                       "new_password": "noupdate",
+                                       "new_password_confirm": "noupdate",
+                                       "new_email": "no@update.com"})
 
       
-        # response = self.fetch("/settings")
-        # self.assertEqual(response.code, 200)
+        with patch('classrank.handlers.BaseHandler.get_current_user') as get_current_user:
+            get_current_user.return_value = b'"andrew"'
+            response = self.fetch("/settings", method="POST", body=body)
 
-        # response = self.fetch("/settings", method="POST", body=body)
+            self.assertEqual(response.code, 200)
+            self.assertIn(b"Incorrect password", response.body)
 
-        # self.assertEqual(response.code, 200)
-        # self.assertIn(b"Incorrect password", response.body)
+    def test_mismatch_new_passwords(self):
+        body = urllib.parse.urlencode({"current_password": "password",
+                                       "new_password": "purple",
+                                       "new_password_confirm": "orange",
+                                       "new_email": "no@update.com"})
 
-    def register(self):
-        body = urllib.parse.urlencode({"email": "test@test.com",
-                                       "school": "gatech",
-                                       "username": "tester",
-                                       "password": "password",
-                                       "password_confirm": "password"})
-        response = self.fetch("/register", method="POST", body=body)
+      
+        with patch('classrank.handlers.BaseHandler.get_current_user') as get_current_user:
+            get_current_user.return_value = b'"andrew"'
+            response = self.fetch("/settings", method="POST", body=body)
 
-    def login(self):
-        body = urllib.parse.urlencode({"email": "test@test.com",
-                                       "password": "password"})
+            self.assertEqual(response.code, 200)
+            self.assertIn(b"Passwords did not match", response.body)
 
-        with patch('classrank.handlers._authenticate.hash_pw') as passhash:
-            with patch(get_current_user_func_path) as auth:
-                auth.return_value = "tester"
-                passhash.return_value = "secret"
+            with Query(self._app.db) as q:
+                user = q.query(self._app.db.account).filter_by(username="andrew").one()
+                self.assertEqual(user.password_hash, authenticate.hash_pw("password", user.password_salt))
 
-                return passhash, self.fetch("/login", method="POST", body=body)
+                # Did not update.. Even though entering new email wasn't erroneous, either ALL
+                # updates should go through or NONE. Since new passwords didn't match, NO
+                # updates should go through, so don't update email.
+                self.assertEqual(user.email_address, "my@mail.com")
 
+    def test_update_email_only(self):
+        body = urllib.parse.urlencode({"current_password": "password",
+                                       "new_password": "",
+                                       "new_password_confirm": "",
+                                       "new_email": "yes@update.com"})
 
-# import os
-# import urllib.parse
-# from unittest.mock import patch
+      
+        with patch('classrank.handlers.BaseHandler.get_current_user') as get_current_user:
+            get_current_user.return_value = b'"andrew"'
+            response = self.fetch("/settings", method="POST", body=body)
 
-# from tornado.testing import AsyncHTTPTestCase
+            self.assertEqual(response.code, 200)
+            self.assertIn(b"Your information has been updated", response.body)
 
-# from classrank.app import ClassRankApp
-# from classrank.database.wrapper import Query
-# from classrank.routing import routes
-# from classrank.handlers import _authenticate as auth
+            with Query(self._app.db) as q:
+                user = q.query(self._app.db.account).filter_by(username="andrew").one()
+                self.assertEqual(user.password_hash, authenticate.hash_pw("password", user.password_salt))
+                self.assertEqual(user.email_address, "yes@update.com")
 
-# test_cookie_secret = "secret_cookie"
-# static_path = "../classrank/static"
-# template_path = "../classrank/templates"
+    '''Not necessary (actually, more like impossible) to test updating ONLY password.
+    The password update is optional, but the POST will ALWAYS upadet the email,
+    since the email form auto-fills with the current email. If the user doesn't
+    want to change their email, they just don't mess with that form, but the
+    logic still "updates" the email to the same email that it already is. Thus,
+    if email AND password update works, it goes without saying that just updating
+    ones password works'''
+    def test_update_email_and_password(self):
+        body = urllib.parse.urlencode({"current_password": "password",
+                                       "new_password": "newpass",
+                                       "new_password_confirm": "newpass",
+                                       "new_email": "yes@update.com"})
 
-# class TestSettings(AsyncHTTPTestCase):
-#     def get_app(self):
-#         self.settings = {
-#             "static_path": os.path.join(os.path.dirname(__file__), static_path),
-#             "template_path": os.path.join(os.path.dirname(__file__), template_path),
+      
+        with patch('classrank.handlers.BaseHandler.get_current_user') as get_current_user:
+            get_current_user.return_value = b'"andrew"'
+            response = self.fetch("/settings", method="POST", body=body)
 
-#             "logged_in_pages": ["dashboard", "search", "rate",
-#                                 "privacy", "settings", "logout"],
+            self.assertEqual(response.code, 200)
+            self.assertIn(b"Your information has been updated", response.body)
 
-#             "logged_out_pages": ["login", "register"],
-#             "cookie_secret": test_cookie_secret,
-#             "login_url": "/login"
-#         }
-#         cr = ClassRankApp(None, routes, **self.settings)
-#         with Query(cr.db) as q:
-#             password = "password"
-#             h, s = auth.create_password(password)
-#             q.add(cr.db.account(**{"username": "andrew",
-#                                    "email_address": "fake@email.com",
-#                                    "password_hash": h,
-#                                    "password_salt": s}))
-#         return cr
-
-
-#     def test_new_password_mismatch(self):
-#         pass
-
-#     def test_new_password_too_short(self):
-#         pass
-
-#     def test_new_email_invalid(self):
-#         pass
-
-#     def test_update_email_success(self):
-#         pass
-
-#     def test_update_password_success(self):
-#         pass
-
-#     def test_update_email_and_password_success(self):
-#         pass
-
-#     def login(self):
-#         body = urllib.parse.urlencode({"email": "fake@email.com", "password": "password"})
-#         return self.fetch("/login", method="POST", body=body)
+            with Query(self._app.db) as q:
+                user = q.query(self._app.db.account).filter_by(username="andrew").one()
+                self.assertEqual(user.password_hash, authenticate.hash_pw("newpass", user.password_salt))
+                self.assertEqual(user.email_address, "yes@update.com")
 
 
