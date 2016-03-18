@@ -5,7 +5,7 @@ from classrank.database.wrapper import Query, NoResultFound, IntegrityError
 from . import BaseHandler
 from . import _authenticate as authenticate
 from .forms import LoginForm, RegistrationForm
-from .email_confirm import generate_confirmation_email_token
+from .email_confirm import ConfirmEmailHandler
 
 
 class RegistrationHandler(BaseHandler):
@@ -19,8 +19,9 @@ class RegistrationHandler(BaseHandler):
             h, s = authenticate.create_password(self.get_argument('password'))
             user = self.db.account(username=self.get_argument('username'),
                                    email_address=self.get_argument('email'),
-                                   password_hash=h, password_salt=s, confirmed=False)
-            confirm_token = generate_confirmation_email_token(self.get_argument('email'))
+                                   password_hash=h, password_salt=s, confirmed=False, confirmed_on=None)
+            confirm_email = ConfirmEmailHandler()
+            confirm_token = confirm_email.generate_confirmation_email_token(self.get_argument('email'))
             try:
                 with Query(self.db) as q:
                     q.add(user)

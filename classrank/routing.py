@@ -2,6 +2,7 @@ import classrank.handlers.auth as auth
 import classrank.handlers.splash as splash
 import classrank.handlers.rate as rate
 import classrank.handlers.dash as dash
+import classrank.handlers.email_confirm as email_confirm
 
 routes = [
     (r'/', splash.SplashHandler),
@@ -10,4 +11,5 @@ routes = [
     (r'/register/?', auth.RegistrationHandler),
     (r'/rate/?', rate.RateHandler),
     (r'/dashboard/?', dash.DashHandler),
+    (r'/confirm/?', email_confirm.ConfirmationEmailHandler)
 ]
