@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, LargeBinary
+from sqlalchemy import Column, Integer, String, ForeignKey, LargeBinary, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -24,6 +24,7 @@ class Account(Base):
     email_address = Column(String(128), nullable=False, unique=True)
     password_hash = Column(LargeBinary(128), nullable=False)
     password_salt = Column(LargeBinary(16), nullable=False)
+    confirmed = Column(Boolean, nullable=False)
 
     student = relationship("Student", backref="account", uselist=False)
     faculty = relationship("Faculty", backref="account", uselist=False)
