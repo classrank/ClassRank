@@ -11,16 +11,13 @@ from tornado.web import authenticated
 class SettingsHandler(BaseHandler):
     @authenticated
     def get(self):
-        current_user = self.__decoded_username()
-
-        with Query(self.db) as q:
-            user = q.query(self.db.account).filter_by(username=current_user).one()
-            email = user.email_address
+        email = self._get_current_user_email()
 
         # populate email field with pre-existing email from database
         # update_success is True when the page is reloaded upon a successful update
         return self.render("settings.html", email=email, errors={}, update_success=False)
 
+    @authenticated
     def post(self):
         errors = dict()
         success = False
@@ -50,12 +47,12 @@ class SettingsHandler(BaseHandler):
                     else:
                         errors['password'] = ["Incorrect password"]
 
-                email = new_email #snag it here (if no exception) so we can pass it in in the self.render(...) call
+                    email = new_email #snag it here (if no exception) so we can pass it in in the self.render(...) call
 
-                # if len is 0, they omitted the new password from the form, so no need to update
-                if len(new_password) > 0 and authenticate.hash_pw(current_password, s) == h:
-                    with Query(self.db) as q:
-                        user.password_hash, user.password_salt = authenticate.create_password(new_password)
+                    # if len is 0, they omitted the new password from the form, so no need to update
+                    if len(new_password) > 0 and authenticate.hash_pw(current_password, s) == h:
+                        with Query(self.db) as q:
+                            user.password_hash, user.password_salt = authenticate.create_password(new_password)
 
                 if len(errors) == 0:
                     success = True
@@ -65,12 +62,16 @@ class SettingsHandler(BaseHandler):
         else:
             # Invalid forms-- have to re-query the old email address to prepopulate it
             errors = form.errors
-
-            with Query(self.db) as q:
-                user = q.query(self.db.account).filter_by(username=current_user).one()
-                email = user.email_address
+            email = self._get_current_user_email()
 
         return self.render("settings.html", email=email, errors=errors, update_success=success)
+
+    def _get_current_user_email(self):
+        current_user = self.__decoded_username()
+        
+        with Query(self.db) as q:
+            user = q.query(self.db.account).filter_by(username=current_user).one()
+            return user.email_address
 
 
     def __decoded_username(self):
