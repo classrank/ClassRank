@@ -17,8 +17,8 @@ class TestApplication(AsyncHTTPTestCase):
             "static_path": os.path.join(os.path.dirname(__file__), "../classrank/static"),
             "template_path": os.path.join(os.path.dirname(__file__),
                                           "../classrank/templates"),
-            "logged_in_pages": [],
-            "logged_out_pages": [],
+            "logged_in_pages": {},
+            "logged_out_pages": {},
             "cookie_secret": test_cookie_secret,
             "login_url": "/login"
         }

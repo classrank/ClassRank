@@ -18,11 +18,8 @@ class TestSettings(AsyncHTTPTestCase):
         self.settings = {
             "static_path": os.path.join(os.path.dirname(__file__), static_path),
             "template_path": os.path.join(os.path.dirname(__file__), template_path),
-
-            "logged_in_pages": ["dashboard", "search", "rate",
-                                "privacy", "settings", "logout"],
-
-            "logged_out_pages": ["login", "register"],
+            "logged_in_pages": {},
+            "logged_out_pages": {},
             "cookie_secret": test_cookie_secret,
             "login_url": "/login"
         }
