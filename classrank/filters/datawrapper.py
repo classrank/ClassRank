@@ -2,7 +2,7 @@ import classrank.database.wrapper as db
 class DataWrapper:
     def __init__(self, instances=dict(), db=None, school="gatech", metric="rating"):
         self.db = db
-        self.datadict = instances
+        self.dataDict = instances
         if db:
             self.school = school
             self.metric = metric
