@@ -1,5 +1,6 @@
 import tornado.web
-
+import tornado.escape
+import json
 
 class BaseHandler(tornado.web.RequestHandler):
 
@@ -20,3 +21,12 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def get_current_user(self):
         return self.get_secure_cookie("user")
+
+
+class BaseApiHandler(tornado.web.RequestHandler):
+    def initialize(self):
+        self.db = self.application.db
+
+    def write(self, dict):
+        super().write(json.dumps(dict, sort_keys=True, indent=4, separators=(',', ': ')))
+        self.add_header('Content-Type', 'application/json')

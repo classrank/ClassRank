@@ -13,6 +13,7 @@ class RateHandler(BaseHandler):
     def get(self):
         return self.render("rate.html")
 
+
     def post(self):
         """Method that processes information placed into the rate form.
 
@@ -27,8 +28,7 @@ class RateHandler(BaseHandler):
         if form.validate():
             try:
                 # store argument data
-                subject = self.get_argument('subject')
-                number = self.get_argument('number')
+                subject, number = self.get_argument('course').split(" ")
                 section = self.get_argument('section')
                 semester = self.get_argument('semester')
                 rating = self.get_argument('rating')

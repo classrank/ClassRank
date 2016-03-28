@@ -49,8 +49,7 @@ class TestRatings(AsyncHTTPTestCase):
         """Test success condition of rating."""
         self.register()
         self.login()
-        body = urllib.parse.urlencode({"subject": "CS",
-                                       "number": "4641",
+        body = urllib.parse.urlencode({"course": "CS 4641",
                                        "section": "A",
                                        "semester": "spring",
                                        "rating": "5"})
@@ -74,8 +73,7 @@ class TestRatings(AsyncHTTPTestCase):
         """Test failure if rating a non-existent course."""
         self.register()
         self.login()
-        body = urllib.parse.urlencode({"subject": "CS",
-                                       "number": "4150",
+        body = urllib.parse.urlencode({"course": "CS 4150",
                                        "section": "A",
                                        "semester": "spring",
                                        "rating": "5"})
@@ -91,7 +89,7 @@ class TestRatings(AsyncHTTPTestCase):
         """Test failure if rating a non-existent section."""
         self.register()
         self.login()
-        body = urllib.parse.urlencode({"name": "CS-4641",
+        body = urllib.parse.urlencode({"course": "CS 4641",
                                        "section": "XXX",
                                        "semester": "spring",
                                        "rating": "5"})
@@ -137,7 +135,6 @@ class TestRatings(AsyncHTTPTestCase):
         attempts.
         """
         self.register()
-        self.login()
         rate_body = self.fetch("/rate").body
 
         invalid_forms = [
