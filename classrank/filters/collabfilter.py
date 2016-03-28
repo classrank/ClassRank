@@ -1,25 +1,39 @@
 import numpy as np
 from sklearn.decomposition import TruncatedSVD 
 from scipy import sparse
+from classrank.filters.datawrapper import DataWrapper
 class CollaborativeFilter:
     #This takes in a matrix
-    def __init__(self, data, numRecommendations):
-        self.dataset = data
+    def __init__(self, data=dict(), numRecommendations=1, db=None, metric="rating", school="gatech"):
+        self.dataset = DataWrapper(instances=data, db=db, school=school, metric=metric)
         self.updated = False
         self.sparsedata = None
         self.sparseifyData()
-        self.svd = TruncatedSVD()
-        self.model = self.svd.inverse_transform(self.svd.fit_transform(self.sparsedata))
-
-    def getRecommendation(self, row, column):
+        try:
+            self.svd = TruncatedSVD(n_components=numRecommendations)
+            self.model = self.svd.inverse_transform(self.svd.fit_transform(self.sparsedata))
+        except ValueError:
+            self.svd = None
+            self.model = None
+            raise ValueError("Not enough ratings for predictions")
+    
+    def getRecommendation(self, instances):
         if(self.updated):
             self.sparseifyData()
             self.model = self.svd.inverse_transform(self.svd.fit_transform(self.sparsedata))
             self.updated = False
-        return self.model[row][column]
+        ret = {}
+        for instance in instances:
+            values = {}
+            for feature in instances[instance]:
+                row = self.dataset.getRow(instance)
+                column = self.dataset.getColumn(feature)
+                values[feature] = self.model[row][column]
+            ret[instance] = values
+        return ret
 
-    def updateValue(self, row, column, value):
-        self.dataset[row][column] = value
+    def updateValues(self, instances):
+        self.dataset.addData(instances)
         self.updated = True
 
     def forceModelUpdate(self):
@@ -28,11 +42,12 @@ class CollaborativeFilter:
         self.model = self.svd.inverse_transform(self.svd.fit_transform(self.sparsedata))
 
     def sparseifyData(self):
-        sparsematrix = sparse.dok_matrix((len(self.dataset), len(self.dataset[0])))
-        for i in range(len(self.dataset)):
-            for j in range(len(self.dataset[i])):
-                if self.dataset[i][j] is not None:
-                    sparsematrix[i, j] = self.dataset[i][j]
+        data = self.dataset.getData()
+        sparsematrix = sparse.dok_matrix((len(data), len(data[0])))
+        for i in range(len(data)):
+            for j in range(len(data[i])):
+                if data[i][j] is not None:
+                    sparsematrix[i, j] = data[i][j]
         self.sparsedata = sparsematrix
 
     def getSparseData(self):
@@ -41,8 +56,14 @@ class CollaborativeFilter:
     def getModel(self):
         return self.model
 
-    def getData(self):
-        return self.dataset
+    def getData(self, *args):
+        if len(args) == 2:
+            return self.dataset.getData(args[0], args[1])
+        else:
+            return self.dataset.getData()
 
     def getUpdated(self):
         return self.updated
+
+    def getDataDict(self):
+        return self.dataset.getDataDict()
