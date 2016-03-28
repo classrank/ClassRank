@@ -4,14 +4,19 @@ from scipy import sparse
 from classrank.filters.datawrapper import DataWrapper
 class CollaborativeFilter:
     #This takes in a matrix
-    def __init__(self, data, numRecommendations=2):
-        self.dataset = DataWrapper(data)
+    def __init__(self, data=dict(), numRecommendations=1, db=None, metric="rating", school="gatech"):
+        self.dataset = DataWrapper(instances=data, db=db, school=school, metric=metric)
         self.updated = False
         self.sparsedata = None
         self.sparseifyData()
-        self.svd = TruncatedSVD()
-        self.model = self.svd.inverse_transform(self.svd.fit_transform(self.sparsedata))
-
+        try:
+            self.svd = TruncatedSVD(n_components=numRecommendations)
+            self.model = self.svd.inverse_transform(self.svd.fit_transform(self.sparsedata))
+        except ValueError:
+            self.svd = None
+            self.model = None
+            raise ValueError("Not enough ratings for predictions")
+    
     def getRecommendation(self, instances):
         if(self.updated):
             self.sparseifyData()

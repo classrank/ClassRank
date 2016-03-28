@@ -1,5 +1,5 @@
 import unittest
-
+from unittest.mock import Mock, MagicMock, patch
 from classrank.filters.collabfilter import CollaborativeFilter
 import numpy as np
 from scipy import sparse

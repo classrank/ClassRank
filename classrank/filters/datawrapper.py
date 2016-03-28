@@ -1,4 +1,4 @@
-import classrank.database.wrapper as db
+from classrank.database.wrapper import Query
 class DataWrapper:
     def __init__(self, instances=dict(), db=None, school="gatech", metric="rating"):
         self.db = db
@@ -63,22 +63,24 @@ class DataWrapper:
         return self.featureLookup[feature]
     
     def queryDB(self):
-        query = wrapper.Query(self.db)
-        for student in query.query(self.db.Student).filter(self.db.Student==self.school).all():
-            results = query.query(self.db.Rating, self.db.Section, self.db.Course).filter(self.db.Rating.student_id == student.uid).\
-                filter(self.db.Rating.section_id==self.db.Course.section_id).all() #a tuple of lists
-            results = zip(*results) #a list of tuples
-            instance = {}
-            for result in results:
-                courseName = query.query(self.db.Course).filter(self.db.Course.uid==result[1].course_id).first()
-                courseName = courseName.name
-                if metric == "rating":
-                    rating = result[0][0].rating
-                elif metric == "grade":
-                    rating = result[0][0].grade
-                elif metric == "workload":
-                    rating = result[0][0].workload
-                elif metric == "difficulty":
-                    rating = result[0][0].difficulty
-                instance[courseName] = rating
-            self.instances[student.uid] = instance
+        with Query(self.db) as query:
+            for student in query.query(self.db.student).filter(self.db.school.abbreviation==self.school).all():
+                results = query.query(self.db.rating, self.db.section).filter(self.db.rating.student_id == student.uid).\
+                    filter(self.db.rating.section_id==self.db.section.uid).all() #a tuple of lists
+                #results = list(zip(*results)) #a list of tuples
+                #pprint.pprint(results)
+                instance = {}
+                for result in results:
+                    courseName = query.query(self.db.course).filter(self.db.course.uid==result[1].course_id).first()
+                    courseName = courseName.name
+                    rating = result[0].__getattribute__(self.metric)
+                    #if self.metric == "rating":
+                    #    rating = result[0][0].rating
+                    #elif self.metric == "grade":
+                    #    rating = result[0][0].grade
+                    #elif self.metric == "workload":
+                    #    rating = result[0][0].workload
+                    #elif self.metric == "difficulty":
+                    #    rating = result[0][0].difficulty
+                    instance[courseName] = rating
+                self.dataDict[student.uid] = instance
