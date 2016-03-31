@@ -2,6 +2,7 @@
     "autoreload": true,
     "debug": true,
     "cookie_secret": "This is actually a secret cookie!986425&(!@",
+    "security_password_salt" : "Some swaggy password salt 437812?..12"
     "logged_in_pages": [
                         {"name": "Dashboard", "url": "dashboard"},
                         {"name": "Search", "url": "search"},

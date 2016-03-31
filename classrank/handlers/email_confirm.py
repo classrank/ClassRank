@@ -34,7 +34,7 @@ class ConfirmEmailHandler(BaseHandler):
         return token.dumps(email, salt='security-password-salt')
 
     def confirm_email_token(self, token, expiration=3600):
-        token = URLSafeTimedSerializer('secret-key')
+        token = URLSafeTimedSerializer('cookie-secret')
         try:
             email = token.loads(token, salt='security-password-salt', max_age=expiration)
         except:
