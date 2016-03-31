@@ -5,29 +5,31 @@ import datetime
 
 class ConfirmEmailHandler(BaseHandler):
 
-    def get(self):
+    def get(self, token):
         return self.render("confirm.html", errors={})
 
     def post(self, token):
         errors = dict()
-        token = self.get_token_from_url(BaseHandler.request.uri)
+
+        """Verify that the email token is valid"""
         try:
             email = self.confirm_email_token(token)
         except:
             errors['confirm'] = ["Confirmation Invalid"]
+            return self.render("confirm.html", errors=errors)
+
         user = Query(self.db).query(self.db.account).filter_by(
                             email_address=email).one()
+
+        """Confirm user isn't confirmed already"""
         if user.confirmed:
             errors['confirm'] = ["Account already confirmed."]
+            return self.render("confirm.html", errors=errors)
         else:
             user.confirmed = True
             user.confirmed_on = datetime.datetime.now()
             Query(self.db).add(user)
-        return self.render("dash.html")
-
-    def get_token_from_url(self, url):
-        #this is super shady and i don't like it, pls help
-        return url[26:]
+            return self.render("dash.html")
 
     def generate_confirmation_email_token(self, email):
         token = URLSafeTimedSerializer('cookie-secret')
