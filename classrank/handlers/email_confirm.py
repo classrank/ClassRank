@@ -1,7 +1,7 @@
 from itsdangerous import URLSafeTimedSerializer
 from classrank.database.wrapper import Query
 from . import BaseHandler
-import datetime
+import datetime, smtplib
 
 class ConfirmEmailHandler(BaseHandler):
 
@@ -42,3 +42,8 @@ class ConfirmEmailHandler(BaseHandler):
         except:
             return False
         return email
+
+    def send_email(self, recipient, template):
+        server = smtplib.SMTP('localhost')
+        server.sendmail('email_sender', recipient, template)
+        server.quit()
