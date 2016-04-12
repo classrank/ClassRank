@@ -1,6 +1,7 @@
 import classrank.handlers.auth as auth
 import classrank.handlers.splash as splash
 import classrank.handlers.rate as rate
+import classrank.handlers.prof_view as prof_view
 import classrank.handlers.dash as dash
 import classrank.handlers.settings as settings
 import classrank.handlers.api as api
@@ -13,6 +14,7 @@ routes = [
     (r'/rate/?', rate.RateHandler),
     (r'/settings/?', settings.SettingsHandler),
     (r'/dashboard/?', dash.DashHandler),
+    (r'/prof_view/?', prof_view.ProfViewHandler),
 
 
 

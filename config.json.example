@@ -7,6 +7,7 @@
                         {"name": "Search", "url": "search"},
                         {"name": "Rate", "url": "rate"},
                         {"name": "Settings", "url": "settings"},
+                        {"name": "View Courses (professor)", "url": "prof_view"},
                         {"name": "Log Out", "url": "logout"}
                     ],
     "logged_out_pages": [
