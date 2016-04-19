@@ -1,5 +1,6 @@
 import tornado.escape
 from tornado.web import authenticated
+from tornado.httputil import url_concat
 
 from classrank.database.wrapper import Query, NoResultFound, IntegrityError
 from . import BaseHandler
@@ -20,8 +21,6 @@ class RegistrationHandler(BaseHandler):
             user = self.db.account(username=self.get_argument('username'),
                                    email_address=self.get_argument('email'),
                                    password_hash=h, password_salt=s, confirmed=False, confirmed_on=None)
-            confirm_email = ConfirmEmailHandler()
-            confirm_token = confirm_email.generate_confirmation_email_token(self.get_argument('email'))
             try:
                 with Query(self.db) as q:
                     q.add(user)
@@ -29,10 +28,15 @@ class RegistrationHandler(BaseHandler):
                                           filter_by(abbreviation=self.get_argument('school')).one()))
             except IntegrityError:
                 errors['username'] = ["A user with that username or email address already exists, or invalid school"]
-            except Exception as e:
+            except Exception:
                 raise
             else:
                 #on success
+                confirm_email = ConfirmEmailHandler()
+                confirm_token = confirm_email.generate_confirmation_email_token(self.get_argument('email'))
+                confirm_url = url_concat("http://classrank.com/confirm/", confirm_token)
+                html = self.render('email.html', confirm_url=confirm_url)
+                confirm_email.send_email(self.get_argument('email'), html)
                 return self.redirect('/login')
         else:
             errors = form.errors
