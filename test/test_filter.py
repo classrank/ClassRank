@@ -1,5 +1,5 @@
 import unittest
-
+from unittest.mock import Mock, MagicMock, patch
 from classrank.filters.collabfilter import CollaborativeFilter
 import numpy as np
 from scipy import sparse
@@ -7,25 +7,84 @@ from scipy import sparse
 class TestSVDFilter(unittest.TestCase):
     
     def setUp(self):
-        self.data = [[2.5, 3.5, 3.0, 3.5, 2.5, 3.0],[3.0, 3.5, 1.5, 5.0, 3.0, 3.5],[2.5, 3.0, None, 3.5, 4.0, None],[None, 3.5, 3.0, 4.0, 4.5, 2.5], [3.5, 4.0, 2.0, 3.0, 3.0, 2.0], [3.0, 4.0, None, 5.0, 3.0, 3.5], [None, 4.5, None, 4.0, None, 1.0]]
+        self.data = {
+            'Lisa Rose': {
+                'Lady in the Water': 2.5,
+                'Snakes on a Plane': 3.5,
+                'Just My Luck': 3.0,
+                'Superman Returns': 3.5,
+                'You, Me and Dupree': 2.5,
+                'The Night Listener': 3.0
+            },
+            'Gene Seymour': {
+                'Lady in the Water': 3.0,
+                'Snakes on a Plane': 3.5,
+                'Just My Luck': 1.5,
+                'Superman Returns': 5.0,
+                'The Night Listener': 3.0,
+                'You, Me and Dupree': 3.5
+            },
+            'Michael Phillips': {
+                'Lady in the Water': 2.5,
+                'Snakes on a Plane': 3.0,
+                'Superman Returns': 3.5,
+                'The Night Listener': 4.0
+            },
+            'Claudia Puig': {
+                'Snakes on a Plane': 3.5,
+                'Just My Luck': 3.0,
+                'The Night Listener': 4.5,
+                'Superman Returns': 4.0,
+                'You, Me and Dupree': 2.5
+            },
+            'Mick LaSalle': {
+                'Lady in the Water': 3.0,
+                'Snakes on a Plane': 4.0,
+                'Just My Luck': 2.0,
+                'Superman Returns': 3.0,
+                'The Night Listener': 3.0,
+                'You, Me and Dupree': 2.0
+            },
+            'Jack Matthews': {
+                'Lady in the Water': 3.0,
+                'Snakes on a Plane': 4.0,
+                'The Night Listener': 3.0,
+                'Superman Returns': 5.0,
+                'You, Me and Dupree': 3.5
+            },
+            'Toby': {
+                'Snakes on a Plane':4.5,
+                'You, Me and Dupree':1.0,
+                'Superman Returns':4.0
+            }
+        }
+        self.instance = 'Gene Seymour'
+        self.feature = 'Snakes on a Plane'
+        self.testInstance = { 'Gene Seymour': { 'Snakes on a Plane': 10} }
+        self.recTester = { 'Gene Seymour': ['Snakes on a Plane'] }
         self.fltr = CollaborativeFilter(self.data, 1)
+        self.test2Instance = {'Gene Seymour' : {'Snakes on a Plane' : 20}}
     
     def test_update_value(self):
-        self.fltr.updateValue(2, 2, 10)
-        self.assertEqual(10,self.fltr.getData()[2][2])
+        self.fltr.updateValues(self.testInstance)
+        self.assertEqual(10,self.fltr.getDataDict()[self.instance][self.feature])
 
     def test_get_recommendation(self):
-        recom = self.fltr.getRecommendation(2,2)
+        recom = self.fltr.getRecommendation(self.recTester)
         self.assertIsNot(recom, None)
     
     def test_force_model_update(self):
         model = self.fltr.getModel()
-        self.fltr.updateValue(2, 2, 10)
+        self.fltr.updateValues(self.testInstance)
         self.fltr.forceModelUpdate()
         self.assertTrue(self.listNotEqual(model, self.fltr.getModel()))
 
+    def test_get_data_dict(self):
+        self.assertEqual(self.data, self.fltr.getDataDict())
+    
     def test_get_data(self):
-        self.assertListEqual(self.data, self.fltr.getData())
+        self.assertIsNot(self.fltr.getData("Gene Seymour", "Snakes on a Plane"), None)
+        self.assertIsInstance(self.fltr.getData(), type([]) )
 
     def test_get_model(self):
         temp = np.array([1])
@@ -37,14 +96,13 @@ class TestSVDFilter(unittest.TestCase):
         
         temp2 = self.fltr.getSparseData()
 
-        self.fltr.updateValue(2, 2, 10)
-        self.fltr.getRecommendation(2, 2)
+        self.fltr.updateValues(self.testInstance)
+        self.fltr.getRecommendation(self.recTester)
         self.assertIsInstance(self.fltr.getSparseData(), type(temp))
         self.assertTrue(self.npListNotEqual(self.fltr.getSparseData(), temp2))
 
         temp3 = self.fltr.getSparseData()
-
-        self.fltr.updateValue(2, 2, 20)
+        self.fltr.updateValues(self.test2Instance)
         self.fltr.forceModelUpdate()
         self.assertIsInstance(self.fltr.getSparseData(), type(temp))
         self.assertTrue(self.npListNotEqual(self.fltr.getSparseData(), temp2))
@@ -53,13 +111,13 @@ class TestSVDFilter(unittest.TestCase):
     def test_is_updated(self):
         self.assertFalse(self.fltr.getUpdated())
         
-        self.fltr.updateValue(2, 2, 10)
+        self.fltr.updateValues(self.testInstance)
         self.assertTrue(self.fltr.getUpdated())
 
-        self.fltr.getRecommendation(2, 2)
+        self.fltr.getRecommendation(self.recTester)
         self.assertFalse(self.fltr.getUpdated())
 
-        self.fltr.updateValue(2, 2, 20)
+        self.fltr.updateValues(self.test2Instance)
         self.assertTrue(self.fltr.getUpdated())
         
         self.fltr.forceModelUpdate()

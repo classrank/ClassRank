@@ -102,5 +102,8 @@ class Rating(Base):
     student_id = Column(Integer, ForeignKey('student.uid'), primary_key=True)
     section_id = Column(Integer, ForeignKey('section.uid'), primary_key=True)
     rating = Column(Integer, nullable=True)
+    difficulty = Column(Integer, nullable=True)
+    workload = Column(Integer, nullable=True)
+    grade = Column(Integer, nullable=True)
     section = relationship('Section', backref='ratings')
     student = relationship('Student', backref='ratings')
