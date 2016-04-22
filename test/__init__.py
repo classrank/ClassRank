@@ -3,7 +3,7 @@ import string
 from classrank.database.wrapper import Query
 
 
-def create_test_database(app):
+def create_example_database(app):
     with Query(app.db) as q:
         # first a school
         s = app.db.school(**{"name": "Georgia Test University", "abbreviation": "test"})
