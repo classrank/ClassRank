@@ -93,6 +93,9 @@ class Section(Base):
     name = Column(String(16))
     crn = Column(Integer)
 
+    def __repr__(self):
+        return "<Section: {}, {}>".format(self.course.name, self.name)
+
 
 class Rating(Base):
     __tablename__ = "rating"
