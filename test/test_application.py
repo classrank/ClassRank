@@ -7,6 +7,7 @@ from tornado.testing import AsyncHTTPTestCase
 from classrank.app import ClassRankApp
 from classrank.database.wrapper import Query
 from classrank.routing import routes
+from test import create_example_database
 
 test_cookie_secret = "secret_cookie"
 
@@ -26,6 +27,11 @@ class TestApplication(AsyncHTTPTestCase):
         with Query(cr.db) as q:
             q.add(cr.db.school(**{"name":"Georgia Test University", "abbreviation": "test"}))
         return cr
+
+    def test_db_example(self):
+        with Query(self._app.db) as q:
+            q.session.delete(q.query(self._app.db.school).one())
+        create_example_database(self._app)
 
     def test_splash(self):
         response = self.fetch("/")
