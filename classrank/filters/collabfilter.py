@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.decomposition import TruncatedSVD 
 from scipy import sparse
 from classrank.filters.datawrapper import DataWrapper
+
 class CollaborativeFilter:
     #This takes in a matrix
     def __init__(self, data=dict(), numRecommendations=1, db=None, metric="rating", school="gatech"):
