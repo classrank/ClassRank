@@ -1,0 +1,13 @@
+{% extends base.html %}
+
+{% block content %}
+
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    Looks like we can't make a prediction right now, there are too few ratings in the system.
+</div>
+{% else %}
+    {{ data }}
+{% end %}
+
+{% end %}

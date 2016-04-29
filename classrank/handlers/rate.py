@@ -11,7 +11,7 @@ from tornado.web import authenticated
 class RateHandler(BaseHandler):
     @authenticated
     def get(self):
-        return self.render("rate.html")
+        return self.render("rate.html", error=False)
 
 
     def post(self):
@@ -59,13 +59,12 @@ class RateHandler(BaseHandler):
                     # add rating to db
                     q.add(rating)
 
-                    q.query(Rating).filter_by(section=section).one()
-                    return self.redirect("/rate")
+                    return self.render("rate.html", error=False)
             except Exception as e:
                 print(e)
-                return self.redirect("/rate")
+                return self.render("rate.html", error=True)
         else:
-            return self.redirect("/rate")
+            return self.render("rate.html", error=True)
 
     def __decoded_username(self):
         """Decodes username from 'get_current_user()'.

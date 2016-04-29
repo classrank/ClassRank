@@ -1,4 +1,5 @@
 from classrank.database.wrapper import Query
+import pprint
 class DataWrapper:
     def __init__(self, instances=dict(), db=None, school="gatech", metric="rating"):
         self.db = db
@@ -68,7 +69,6 @@ class DataWrapper:
                 results = query.query(self.db.rating, self.db.section).filter(self.db.rating.student_id == student.uid).\
                     filter(self.db.rating.section_id==self.db.section.uid).all() #a tuple of lists
                 #results = list(zip(*results)) #a list of tuples
-                #pprint.pprint(results)
                 instance = {}
                 for result in results:
                     courseName = query.query(self.db.course).filter(self.db.course.uid==result[1].course_id).first()

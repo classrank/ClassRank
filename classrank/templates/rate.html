@@ -1,7 +1,11 @@
 {% extends base.html %}
 
 {% block content %}
-
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+    There was an error adding your rating.
+    </div>
+    {% end %}
 <form action='/rate' method='post'>
     <fieldset class='form-group'>
 

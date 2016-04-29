@@ -4,6 +4,12 @@
 
   display: flex;
   align-items: center;
+  justify-content: center;
+}
+
+.minwidth {
+min-width: 640px;
+text-align: center;
 }
 
 /* default styling for autocomplete */

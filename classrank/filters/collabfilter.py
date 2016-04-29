@@ -2,7 +2,6 @@ import numpy as np
 from sklearn.decomposition import TruncatedSVD 
 from scipy import sparse
 from classrank.filters.datawrapper import DataWrapper
-
 class CollaborativeFilter:
     #This takes in a matrix
     def __init__(self, data=dict(), numRecommendations=1, db=None, metric="rating", school="gatech"):
@@ -27,9 +26,12 @@ class CollaborativeFilter:
         for instance in instances:
             values = {}
             for feature in instances[instance]:
-                row = self.dataset.getRow(instance)
-                column = self.dataset.getColumn(feature)
-                values[feature] = self.model[row][column]
+                try:
+                    row = self.dataset.getRow(instance)
+                    column = self.dataset.getColumn(feature)
+                    values[feature] = self.model[row][column]
+                except KeyError:
+                    values[feature] = None
             ret[instance] = values
         return ret
 
@@ -44,6 +46,7 @@ class CollaborativeFilter:
 
     def sparseifyData(self):
         data = self.dataset.getData()
+        print(data)
         sparsematrix = sparse.dok_matrix((len(data), len(data[0])))
         for i in range(len(data)):
             for j in range(len(data[i])):
