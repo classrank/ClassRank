@@ -1,9 +1,13 @@
+import datetime  # For date-related fields
+
 from wtforms.fields import IntegerField, StringField, RadioField, SelectField
 from wtforms import validators as wtfv
 from wtforms.validators import ValidationError
 from wtforms_tornado import Form
 
 """Handles form validation for all pages."""
+
+cur_year = datetime.datetime.now().year
 
 password_min = 6
 password_max = 128
@@ -44,6 +48,7 @@ class RegistrationForm(Form):
 
 class RateForm(Form):
     """Validates form data retrieved from the rating page."""
+
     course = StringField(u'course',
                           [wtfv.required(message=required_field_msg),
                            wtfv.length(min=4, max=12)])
@@ -61,6 +66,11 @@ class RateForm(Form):
     rating = IntegerField(u'rating',
                           [wtfv.required(message=required_field_msg),
                            wtfv.NumberRange(min=0, max=5)])
+
+    year = IntegerField(u'year',
+                          [wtfv.required(message=required_field_msg),
+                           wtfv.NumberRange(min=1970, max=cur_year)])
+
 
 
 def optionalLength(min, max, message):

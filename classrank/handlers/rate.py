@@ -32,7 +32,10 @@ class RateHandler(BaseHandler):
                 section = self.get_argument('section')
                 semester = self.get_argument('semester')
                 rating = self.get_argument('rating')
+                year = self.get_argument('year')
                 cur_user = self.__decoded_username()
+
+                print(subject, number, section, semester, rating, year, cur_user)
 
                 with Query(self.db) as q:
                     # get queries for all concerned tables
@@ -42,11 +45,13 @@ class RateHandler(BaseHandler):
 
                     # get needed course, section, and account info from db
                     # calling 'one()' verifies that one match exists
-                    course = course_q.filter_by(subject=subject, number=number).one()
+                    course = course_q.filter_by(subject=subject,
+                                                number=number).one()
 
                     section = section_q.filter_by(course_id=course.uid,
                                                   name=section,
-                                                  semester=semester).one()
+                                                  semester=semester,
+                                                  year=year).one()
 
                     account = account_q.filter_by(username=cur_user).one()
 
