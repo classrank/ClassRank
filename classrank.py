@@ -47,9 +47,6 @@ if __name__ == "__main__":
                     q.add(cr.db.__getattribute__(table)(**item))
     except IntegrityError as e:
         print(e)
-    finally:
-        with Query(cr.db) as q:
-            print(q.query(cr.db.section).all())
 
 
     cr.listen(args.port)
