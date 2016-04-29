@@ -7,7 +7,18 @@
     Looks like we can't make a prediction right now, there are too few ratings in the system.
 </div>
 {% else %}
-    {{ data }}
+    {% for name, value in data['rating'] %}
+        {% if value is not None %}
+            <div class="col-sm-6">
+                <div class="card card-block">
+                    <h4 class="card-title">{{ name }}</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Rating: {{value}}</li>
+                    </ul>
+                </div>
+            </div>
+        {% end %}
+    {% end %}
 {% end %}
 
 {% end %}

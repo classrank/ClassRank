@@ -14,7 +14,7 @@ routes = [
     (r'/rate/?', rate.RateHandler),
     (r'/settings/?', settings.SettingsHandler),
     (r'/dashboard/?', dash.DashHandler),
-    (r'/schedule/?', suggestion.SuggestionHandler),
+    (r'/search/?', suggestion.SuggestionHandler),
 
 
 

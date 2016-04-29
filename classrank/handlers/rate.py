@@ -13,7 +13,7 @@ class RateHandler(BaseHandler):
     def get(self):
         return self.render("rate.html", error=False)
 
-
+    @authenticated
     def post(self):
         """Method that processes information placed into the rate form.
 

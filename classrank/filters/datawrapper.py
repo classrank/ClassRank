@@ -1,5 +1,4 @@
 from classrank.database.wrapper import Query
-import pprint
 class DataWrapper:
     def __init__(self, instances=dict(), db=None, school="gatech", metric="rating"):
         self.db = db

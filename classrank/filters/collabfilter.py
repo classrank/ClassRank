@@ -46,7 +46,6 @@ class CollaborativeFilter:
 
     def sparseifyData(self):
         data = self.dataset.getData()
-        print(data)
         sparsematrix = sparse.dok_matrix((len(data), len(data[0])))
         for i in range(len(data)):
             for j in range(len(data[i])):
