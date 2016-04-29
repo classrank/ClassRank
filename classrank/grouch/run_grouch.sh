@@ -5,7 +5,10 @@ set -e
 INSTALL=1    # 1: install grouch; use 0 if already installed
 CLEANCYCLE=1 # 1: remove installed grouch; use 0 if you want to keep it
 
-RESULT_FILE='result.json'
+SEMESTER_STOP=8 # Number of semesters to reach back into
+SUBJECTS=[] # Keep empty to get all subjects
+
+RESULT_FILE='result.txt'
 
 if [ $INSTALL -eq 1 ]
 then
@@ -16,13 +19,15 @@ then
     python2 -m virtualenv venv
     source venv/bin/activate
     python2 -m pip install scrapy
+    printf "SEMESTER_STOP = $SEMESTER_STOP\n" >> grouch/settings.py
+    printf "SUBJECTS = $SUBJECTS\n" >> grouch/settings.py
     deactivate
     cd ..
 fi
 
 cd grouch_install
 source venv/bin/activate
-scrapy crawl -o $RESULT_FILE -t json oscar
+scrapy crawl -o $RESULT_FILE -t jsonlines oscar > /dev/null
 cp $RESULT_FILE ..
 cd ..
 
