@@ -135,6 +135,7 @@ class TestRatings(AsyncHTTPTestCase):
         attempts.
         """
         self.register()
+        self.login()
         rate_body = self.fetch("/rate").body
 
         invalid_forms = [
@@ -162,10 +163,12 @@ class TestRatings(AsyncHTTPTestCase):
             {"name": "CS-4641", "section": "A 123456789",
              "semester": "spring", "rating": "3"}
         ]
-        # iterate over all forms, returning to register page each time
-        for form in invalid_forms:
-            response = self.post_form(form)
-            self.assertIn(b"There was an error adding your rating.", response.body)
+        with patch(get_current_user_func_path) as auth:
+            auth.return_value = b'"tester"'
+            # iterate over all forms, returning to register page each time
+            for form in invalid_forms:
+                response = self.post_form(form)
+                self.assertIn(b"There was an error adding your rating.", response.body)
 
         # assert that nothing was added to database from all attempts
         with Query(self._app.db) as q:
