@@ -79,6 +79,12 @@ screen, and view predictions based on the ratings made by other users.
 [ClassRank](https://github.com/classrank/ClassRank) and
 [Grouch](https://github.com/classrank/Grouch)
 
+Note: our 1.0 release is [here](https://github.com/classrank/ClassRank/releases/tag/v1.0)
+. This is our official 1.0 release, and the
+project, for the intents of this course, is 'done'. However,
+we will continue working beyond it. So, grade from there. Or, grade from where
+we are at the time of grading. Your choice.
+
 [0]: https://github.com/classrank/ClassRank
 [1]: https://www.python.org
 [2]: https://www.continuum.io/downloads
