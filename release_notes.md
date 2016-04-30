@@ -1,4 +1,4 @@
-#README for [ClassRank][0]
+#ClassRank v1.0 release notes
 
 #Table of Contents
 
