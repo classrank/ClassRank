@@ -18,7 +18,8 @@ class TestApiHandlers(AsyncHTTPTestCase):
             "logged_in_pages": {},
             "logged_out_pages": {},
             "cookie_secret": test_cookie_secret,
-            "login_url": "/login"
+            "login_url": "/login",
+            "grouch_results": "test/empty.json.example"
         }
         cr = ClassRankApp(os.environ.get("CONNECTION", "sqlite://"), routes, **self.settings)
         with Query(cr.db) as q:

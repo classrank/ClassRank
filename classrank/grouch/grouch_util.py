@@ -20,37 +20,38 @@ def add_to_database(grouch_output, db):
     all_courses = parse(grouch_output)
     print("Ending Grouch parse ({}).".format(datetime.datetime.now()))
 
-    print("Beginning database add ({}).".format(datetime.datetime.now()))
-    with Query(db) as q:
+    if len(all_courses) != 0:
+        print("Beginning database add ({}).".format(datetime.datetime.now()))
+        with Query(db) as q:
 
-        school_dict = {"name": "Georgia Institute of Technology",
-                       "abbreviation": "gatech"}
+            school_dict = {"name": "Georgia Institute of Technology",
+                           "abbreviation": "gatech"}
 
-        if not _school_in_database(school_dict, db, q):
-            q.add(db.school(**school_dict))
+            if not _school_in_database(school_dict, db, q):
+                q.add(db.school(**school_dict))
 
-        school_id = q.query(db.school).filter_by(**school_dict).one().uid
+            school_id = q.query(db.school).filter_by(**school_dict).one().uid
 
-        for course, sections in all_courses:
-            course_dict = {"school_id": school_id,
-                           "name": course['name'],
-                           "description": course['fullname'],
-                           "number": course['number'],
-                           "subject": course['school']}
+            for course, sections in all_courses:
+                course_dict = {"school_id": school_id,
+                               "name": course['name'],
+                               "description": course['fullname'],
+                               "number": course['number'],
+                               "subject": course['school']}
 
-            if not _course_in_database(course_dict, db, q):
-                q.add(db.course(**course_dict))
+                if not _course_in_database(course_dict, db, q):
+                    q.add(db.course(**course_dict))
 
-            course_id = q.query(db.course).filter_by(**course_dict).one().uid
+                course_id = q.query(db.course).filter_by(**course_dict).one().uid
 
-            for section in sections:
-                section_dict = {"course_id": course_id,
-                                "semester": course['semester'],
-                                "year": course['year'],
-                                "name": section['section_id'],
-                                "crn": section['crn']}
+                for section in sections:
+                    section_dict = {"course_id": course_id,
+                                    "semester": course['semester'],
+                                    "year": course['year'],
+                                    "name": section['section_id'],
+                                    "crn": section['crn']}
 
-                q.add(db.section(**section_dict))
+                    q.add(db.section(**section_dict))
 
     print("Ending database add ({}).".format(datetime.datetime.now()))
 
