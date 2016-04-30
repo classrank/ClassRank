@@ -11,9 +11,9 @@ from tornado.web import authenticated
 class RateHandler(BaseHandler):
     @authenticated
     def get(self):
-        return self.render("rate.html")
+        return self.render("rate.html", error=False)
 
-
+    @authenticated
     def post(self):
         """Method that processes information placed into the rate form.
 
@@ -32,7 +32,10 @@ class RateHandler(BaseHandler):
                 section = self.get_argument('section')
                 semester = self.get_argument('semester')
                 rating = self.get_argument('rating')
+                year = self.get_argument('year')
                 cur_user = self.__decoded_username()
+
+                print(subject, number, section, semester, rating, year, cur_user)
 
                 with Query(self.db) as q:
                     # get queries for all concerned tables
@@ -42,11 +45,13 @@ class RateHandler(BaseHandler):
 
                     # get needed course, section, and account info from db
                     # calling 'one()' verifies that one match exists
-                    course = course_q.filter_by(subject=subject, number=number).one()
+                    course = course_q.filter_by(subject=subject,
+                                                number=number).one()
 
                     section = section_q.filter_by(course_id=course.uid,
                                                   name=section,
-                                                  semester=semester).one()
+                                                  semester=semester,
+                                                  year=year).one()
 
                     account = account_q.filter_by(username=cur_user).one()
 
@@ -59,13 +64,12 @@ class RateHandler(BaseHandler):
                     # add rating to db
                     q.add(rating)
 
-                    q.query(Rating).filter_by(section=section).one()
-                    return self.redirect("/rate")
+                    return self.render("rate.html", error=False)
             except Exception as e:
                 print(e)
-                return self.redirect("/rate")
+                return self.render("rate.html", error=True)
         else:
-            return self.redirect("/rate")
+            return self.render("rate.html", error=True)
 
     def __decoded_username(self):
         """Decodes username from 'get_current_user()'.

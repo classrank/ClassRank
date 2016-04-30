@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, LargeBinary
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.session import Session
 
 Base = declarative_base()  # single base class instance for joins
 
@@ -52,6 +53,12 @@ class Student(Base):
     school_id = Column(Integer, ForeignKey("school.uid"), nullable=False)
     user_id = Column(Integer, ForeignKey("account.uid"), nullable=False)
     sections = relationship('Section', secondary='rating', backref='student')
+
+    @property
+    def courses(self):
+        session = Session.object_session(self)
+        return session.query(Course).join(Section).filter(Section.uid.in_(
+            section.uid for section in self.sections)).all()
 
 
 class Faculty(Base):

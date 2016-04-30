@@ -1,7 +1,11 @@
 {% extends base.html %}
 
 {% block content %}
-
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+    There was an error adding your rating.
+    </div>
+    {% end %}
 <form action='/rate' method='post'>
     <fieldset class='form-group'>
 
@@ -27,6 +31,14 @@
             <input type="radio" id="course_semester_form" name="semester" value="fall" checked> fall
             <input type="radio" id="course_semester_form" name="semester" value="spring"> spring
             <input type="radio" id="course_semester_form" name="semester" value="summer"> summer
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="course_rating_form" class="col-sm-2 form-control-label">Year</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="course_rating_form"
+                 placeholder="2016" name='year'>
         </div>
       </div>
 

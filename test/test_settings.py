@@ -12,7 +12,7 @@ from classrank.handlers import _authenticate as authenticate
 test_cookie_secret = "secret_cookie"
 
 
-class TestApplication(AsyncHTTPTestCase):
+class TestSettings(AsyncHTTPTestCase):
     def get_app(self):
         self.settings = {
             "logged_in_pages": {},
