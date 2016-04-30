@@ -11,5 +11,5 @@ routes = [
     (r'/register/?', auth.RegistrationHandler),
     (r'/rate/?', rate.RateHandler),
     (r'/dashboard/?', dash.DashHandler),
-    (r'/confirm/<token>/?', email_confirm.ConfirmationEmailHandler)
+    (r'/confirm/<token>/?', email_confirm.ConfirmEmailHandler)
 ]
