@@ -22,7 +22,7 @@ class SettingsHandler(BaseHandler):
         errors = dict()
         success = False
         form = SettingsForm(self.request.arguments)
-        current_user = self.__decoded_username()
+        current_user = self.decoded_username()
 
         if form.validate():
             try:
@@ -67,21 +67,8 @@ class SettingsHandler(BaseHandler):
         return self.render("settings.html", email=email, errors=errors, update_success=success)
 
     def _get_current_user_email(self):
-        current_user = self.__decoded_username()
+        current_user = self.decoded_username()
         
         with Query(self.db) as q:
             user = q.query(self.db.account).filter_by(username=current_user).one()
             return user.email_address
-
-
-    def __decoded_username(self):
-        """Decodes username from 'get_current_user()'.
-
-        get_current_user method returns a byte array with wrapped double
-        quotes inside. For example, the username 'mitchell' would appear as:
-                b'"mitchell"'.
-        We need to decode the bytes, and strip the quotes off.
-
-        :returns: quote-less string version of get_current_user
-        """
-        return bytes.decode(self.get_current_user())[1:-1]

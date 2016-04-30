@@ -45,8 +45,8 @@ if __name__ == "__main__":
             for table in db_config:
                 for item in db_config[table]:
                     q.add(cr.db.__getattribute__(table)(**item))
-    except IntegrityError:
-        pass
+    except IntegrityError as e:
+        print(e)
 
 
     cr.listen(args.port)

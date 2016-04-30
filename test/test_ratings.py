@@ -85,7 +85,7 @@ class TestRatings(AsyncHTTPTestCase):
         with patch(get_current_user_func_path) as auth:
             auth.return_value = b'"tester"'
             response = self.fetch("/rate", method="POST", body=body)
-            self.assertEqual(self.fetch("/rate").body, response.body)
+            self.assertIn(b"There was an error adding your rating.", response.body)
             with Query(self._app.db) as q:
                 rating = q.query(self._app.db.rating).all()
             self.assertEqual(len(rating), 0)
@@ -102,7 +102,7 @@ class TestRatings(AsyncHTTPTestCase):
         with patch(get_current_user_func_path) as auth:
             auth.return_value = b'"tester"'
             response = self.fetch("/rate", method="POST", body=body)
-            self.assertEqual(self.fetch("/rate").body, response.body)
+            self.assertIn(b"There was an error adding your rating.", response.body)
             with Query(self._app.db) as q:
                 rating = q.query(self._app.db.rating).all()
             self.assertEqual(len(rating), 0)
@@ -119,7 +119,7 @@ class TestRatings(AsyncHTTPTestCase):
         with patch(get_current_user_func_path) as auth:
             auth.return_value = b'"tester"'
             response = self.fetch("/rate", method="POST", body=body)
-            self.assertEqual(self.fetch("/rate").body, response.body)
+            self.assertIn(b"There was an error adding your rating.", response.body)
             with Query(self._app.db) as q:
                 rating = q.query(self._app.db.rating).all()
             self.assertEqual(len(rating), 0)
@@ -136,7 +136,7 @@ class TestRatings(AsyncHTTPTestCase):
         with patch(get_current_user_func_path) as auth:
             auth.return_value = b'"tester"'
             response = self.fetch("/rate", method="POST", body=body)
-            self.assertEqual(self.fetch("/rate").body, response.body)
+            self.assertIn(b"There was an error adding your rating.", response.body)
             with Query(self._app.db) as q:
                 rating = q.query(self._app.db.rating).all()
             self.assertEqual(len(rating), 0)
@@ -154,7 +154,7 @@ class TestRatings(AsyncHTTPTestCase):
         with patch(get_current_user_func_path) as auth:
             auth.return_value = b'"tester"'
             response = self.fetch("/rate", method="POST", body=body)
-            self.assertEqual(self.fetch("/rate").body, response.body)
+            self.assertIn(b"There was an error adding your rating.", response.body)
             with Query(self._app.db) as q:
                 rating = q.query(self._app.db.rating).all()
             self.assertEqual(len(rating), 0)
@@ -171,7 +171,7 @@ class TestRatings(AsyncHTTPTestCase):
         with patch(get_current_user_func_path) as auth:
             auth.return_value = b'"tester"'
             response = self.fetch("/rate", method="POST", body=body)
-            self.assertEqual(self.fetch("/rate").body, response.body)
+            self.assertIn(b"There was an error adding your rating.", response.body)
             with Query(self._app.db) as q:
                 rating = q.query(self._app.db.rating).all()
             self.assertEqual(len(rating), 0)
@@ -196,6 +196,7 @@ class TestRatings(AsyncHTTPTestCase):
         attempts.
         """
         self.register()
+        self.login()
         rate_body = self.fetch("/rate").body
 
         cur_year = datetime.datetime.now().year
@@ -231,10 +232,12 @@ class TestRatings(AsyncHTTPTestCase):
             {"name": "CS-4641", "section": "A",
              "semester": "spring", "rating": "3", "year": "1969"}
         ]
-        # iterate over all forms, returning to register page each time
-        for form in invalid_forms:
-            response = self.post_form(form)
-            self.assertEqual(rate_body, response.body)
+        with patch(get_current_user_func_path) as auth:
+            auth.return_value = b'"tester"'
+            # iterate over all forms, returning to register page each time
+            for form in invalid_forms:
+                response = self.post_form(form)
+                self.assertIn(b"There was an error adding your rating.", response.body)
 
         # assert that nothing was added to database from all attempts
         with Query(self._app.db) as q:

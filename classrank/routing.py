@@ -4,6 +4,7 @@ import classrank.handlers.rate as rate
 import classrank.handlers.dash as dash
 import classrank.handlers.settings as settings
 import classrank.handlers.api as api
+import classrank.handlers.suggestion as suggestion
 
 routes = [
     (r'/', splash.SplashHandler),
@@ -13,6 +14,7 @@ routes = [
     (r'/rate/?', rate.RateHandler),
     (r'/settings/?', settings.SettingsHandler),
     (r'/dashboard/?', dash.DashHandler),
+    (r'/search/?', suggestion.SuggestionHandler),
 
 
 

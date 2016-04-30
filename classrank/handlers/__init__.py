@@ -22,6 +22,18 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_secure_cookie("user")
 
+    def decoded_username(self):
+        """Decodes username from 'get_current_user()'.
+
+        get_current_user method returns a byte array with wrapped double
+        quotes inside. For example, the username 'mitchell' would appear as:
+                b'"mitchell"'.
+        We need to decode the bytes, and strip the quotes off.
+
+        :returns: quote-less string version of get_current_user
+        """
+        return bytes.decode(self.get_current_user())[1:-1]
+
 
 class BaseApiHandler(tornado.web.RequestHandler):
     def initialize(self):

@@ -26,9 +26,12 @@ class CollaborativeFilter:
         for instance in instances:
             values = {}
             for feature in instances[instance]:
-                row = self.dataset.getRow(instance)
-                column = self.dataset.getColumn(feature)
-                values[feature] = self.model[row][column]
+                try:
+                    row = self.dataset.getRow(instance)
+                    column = self.dataset.getColumn(feature)
+                    values[feature] = self.model[row][column]
+                except KeyError:
+                    values[feature] = None
             ret[instance] = values
         return ret
 
