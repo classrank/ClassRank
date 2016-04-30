@@ -24,8 +24,9 @@ class RegistrationHandler(BaseHandler):
             try:
                 with Query(self.db) as q:
                     q.add(user)
-                    q.add(self.db.student(account=user, school=q.query(self.db.school).
-                                          filter_by(abbreviation=self.get_argument('school')).one()))
+                    print("yes")
+                    # q.add(self.db.student(account=user, school=q.query(self.db.school).
+                    #                       filter_by(abbreviation=self.get_argument('school')).one()))
             except IntegrityError:
                 errors['username'] = ["A user with that username or email address already exists, or invalid school"]
             except Exception:
