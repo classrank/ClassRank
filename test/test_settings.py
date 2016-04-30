@@ -21,7 +21,8 @@ class TestSettings(AsyncHTTPTestCase):
             "template_path": os.path.join(os.path.dirname(__file__),
                                           "../classrank/templates"),
             "cookie_secret": test_cookie_secret,
-            "login_url": "/login"
+            "login_url": "/login",
+            "grouch_results": "test/empty.json.example"
         }
         cr = ClassRankApp(None, routes, **self.settings)
         with Query(cr.db) as q:

@@ -11,7 +11,11 @@ class TestBaseHandler(unittest.TestCase):
     def setUp(self):
         self.app = MagicMock()
         self.app.db = "database"
-        self.app.settings = {"logged_in_pages": None, "logged_out_pages": None, "cookie_secret": test_cookie_secret}
+        self.app.settings = {"logged_in_pages": None,
+                             "logged_out_pages": None,
+                             "cookie_secret": test_cookie_secret,
+                             "grouch_results": "test/empty.json.example"
+        }
 
     def test_base_handler(self):
         handler = BaseHandler(self.app, Mock())

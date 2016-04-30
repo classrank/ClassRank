@@ -1,6 +1,7 @@
 import tornado.web
 
 import classrank.database.wrapper as db
+import classrank.grouch.grouch_util as grouch
 
 class ClassRankApp(tornado.web.Application):
     def __init__(self, db_connection: str or None, *args, **kwargs):
@@ -16,4 +17,5 @@ class ClassRankApp(tornado.web.Application):
         else:
             self.db = db.Database(db_connection)
 
-settings = {'debug': False,}
+
+        grouch.add_to_database(self.settings['grouch_results'], self.db)
