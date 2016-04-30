@@ -17,87 +17,8 @@ class ProfViewHandler(BaseHandler):
 
     The array is sorted chronologically, then by course name, then by section letter"""
     @authenticated
-    def get(self):
-        # TODO: populate dropdown lists with courses taught by prof
-        courses = []
-        course1 = {}
-        course2 = {}
-        course3 = {}
-        course4 = {}
-        course5 = {}
-        course6 = {}
-        course7 = {}
-        course8 = {}
-        course9 = {}
-        course10 = {}
-
-        course1["year"] = 2013
-        course1["semester"] = "fall"
-        course1["name"] = "CS 1100"
-        course1["section"] = "A"
-
-        course2["year"] = 2013
-        course2["semester"] = "fall"
-        course2["name"] = "CS 1332"
-        course2["section"] = "N"
-
-        course3["year"] = 2013
-        course3["semester"] = "fall"
-        course3["name"] = "CS 1332"
-        course3["section"] = "M"
-
-        course4["year"] = 2014
-        course4["semester"] = "spring"
-        course4["name"] = "CS 1100"
-        course4["section"] = "A"
-
-        course5["year"] = 2014
-        course5["semester"] = "spring"
-        course5["name"] = "CS 1100"
-        course5["section"] = "B"
-
-        course6["year"] = 2014
-        course6["semester"] = "spring"
-        course6["name"] = "CS 4400"
-        course6["section"] = "X"
-
-        course7["year"] = 2014
-        course7["semester"] = "summer"
-        course7["name"] = "CS 4400"
-        course7["section"] = "L"
-
-        course8["year"] = 2014
-        course8["semester"] = "fall"
-        course8["name"] = "CS 2110"
-        course8["section"] = "A"
-
-        course9["year"] = 2014
-        course9["semester"] = "fall"
-        course9["name"] = "CS 2110"
-        course9["section"] = "B"
-
-        course10["year"] = 2015
-        course10["semester"] = "fall"
-        course10["name"] = "CS 3451"
-        course10["section"] = "H"
-
-        courses.append(course1)
-        courses.append(course2)
-        courses.append(course3)
-        courses.append(course4)
-        courses.append(course5)
-        courses.append(course6)
-        courses.append(course7)
-        courses.append(course8)
-        courses.append(course9)
-        courses.append(course10)
-
-        sorted(courses, key=course_section)
-        sorted(courses, key=course_name)
-        sorted(courses, key=course_semester)
-        sorted(courses, key=course_year)
-
-        return self.render("prof_view.html", courses=courses)
+    def get(self):        
+        return self.render("prof_view.html", username=str(self.__decoded_username()))
     
     def _get_current_user_email(self):
         current_user = self.__decoded_username()

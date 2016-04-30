@@ -25,7 +25,7 @@
 <!-- Javascript to filter courses based on dropdown selections -->
 <script src="{{ static_url('prof_view_scripts.js') }}"></script>
 <script type="text/javascript">
-  prof_js_init( {% raw courses %} );
+  prof_js_init("{{username}}");
 </script>
 
 {% end %}

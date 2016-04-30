@@ -20,5 +20,5 @@ routes = [
 
     # api handlers
     (r'/api/autocomplete/courses/?', api.CourseAutocomplete),
-
+    (r'/api/professor/courses/?', api.ProfessorGetCourses),
 ]

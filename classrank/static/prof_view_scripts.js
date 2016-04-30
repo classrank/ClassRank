@@ -3,14 +3,38 @@ var courseDropdown;
 var sectionDropdown;
 var courses; //array of dicts with "year", "semester", "name", and "section" keys
 
-function prof_js_init(courseJson)
+function prof_js_init(prof_username)
 {
     semesterDropdown = document.getElementById("SemesterDropdown");
     courseDropdown = document.getElementById("CourseDropdown");
     sectionDropdown = document.getElementById("SectionDropdown");
-    courses = courseJson;
 
-    populateSemesterDropdown();
+    var http = new XMLHttpRequest();
+
+    alert("Opening http request");
+    http.open("GET", "/api/professor/courses/?username=" + prof_username);
+    http.onload = function (e) {
+        if(http.readyState === 4)
+        {
+            if(http.status === 200)
+            {
+                alert("SUCCESS ? ");
+                console.log(http.responseText);
+                courses = JSON.parse(http.responseText);
+                populateSemesterDropdown();
+            }
+            else
+            {
+                console.error(http.statusText);
+            }
+        }
+    }
+
+    http.onerror = function (e) {
+        console.error(http.statusText);   
+    }
+
+    http.send();
 }
 
 function populateSemesterDropdown()
