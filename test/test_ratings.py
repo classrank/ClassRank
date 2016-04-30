@@ -1,6 +1,8 @@
 from classrank.app import ClassRankApp
 from classrank.database.wrapper import Query
 from classrank.routing import routes
+
+import datetime
 from os import path
 from tornado.testing import AsyncHTTPTestCase
 import urllib.parse
@@ -40,7 +42,7 @@ class TestRatings(AsyncHTTPTestCase):
 
             q.add(cr.db.section(**{"course_id": 1,
                                    "semester": "spring",
-                                   "year": 2016,
+                                   "year": "2016",
                                    "name": "A",
                                    "crn": 1}))
         return cr
@@ -49,10 +51,10 @@ class TestRatings(AsyncHTTPTestCase):
         """Test success condition of rating."""
         self.register()
         self.login()
-        body = urllib.parse.urlencode({"subject": "CS",
-                                       "number": "4641",
+        body = urllib.parse.urlencode({"course": "CS 4641",
                                        "section": "A",
                                        "semester": "spring",
+                                       "year": "2016",
                                        "rating": "5"})
         with patch(get_current_user_func_path) as auth:
             auth.return_value = b'"tester"'
@@ -63,6 +65,7 @@ class TestRatings(AsyncHTTPTestCase):
                 self.assertEqual(5, rating.rating)
 
                 self.assertEqual("spring", rating.section.semester)
+                print("\n\n\n\n\n", type(rating.section.year))
                 self.assertEqual(2016, rating.section.year)
                 self.assertEqual(1, rating.section.crn)
                 self.assertEqual(1, rating.section.course_id)
@@ -74,47 +77,101 @@ class TestRatings(AsyncHTTPTestCase):
         """Test failure if rating a non-existent course."""
         self.register()
         self.login()
-        body = urllib.parse.urlencode({"subject": "CS",
-                                       "number": "4150",
+        body = urllib.parse.urlencode({"course": "CS 4150",
                                        "section": "A",
                                        "semester": "spring",
+                                       "year": "2016",
                                        "rating": "5"})
         with patch(get_current_user_func_path) as auth:
             auth.return_value = b'"tester"'
             response = self.fetch("/rate", method="POST", body=body)
-            self.assertEqual(self.fetch("/rate").body, response.body)
+            self.assertIn(b"There was an error adding your rating.", response.body)
             with Query(self._app.db) as q:
                 rating = q.query(self._app.db.rating).all()
             self.assertEqual(len(rating), 0)
 
-    def test_fail_section_not_found(self):
-        """Test failure if rating a non-existent section."""
+    def test_fail_section_name_not_found(self):
+        """Test failure if rating a non-existent section (name not found)."""
         self.register()
         self.login()
-        body = urllib.parse.urlencode({"name": "CS-4641",
+        body = urllib.parse.urlencode({"course": "CS 4641",
                                        "section": "XXX",
                                        "semester": "spring",
+                                       "year": "2016",
                                        "rating": "5"})
         with patch(get_current_user_func_path) as auth:
             auth.return_value = b'"tester"'
             response = self.fetch("/rate", method="POST", body=body)
-            self.assertEqual(self.fetch("/rate").body, response.body)
+            self.assertIn(b"There was an error adding your rating.", response.body)
             with Query(self._app.db) as q:
                 rating = q.query(self._app.db.rating).all()
             self.assertEqual(len(rating), 0)
 
-    def test_fail_section_and_course_not_found(self):
-        """Test failure if rating a non-existent section and course."""
+    def test_fail_section_year_not_found(self):
+        """Test failure if rating a non-existent section (year not found)."""
+        self.register()
+        self.login()
+        body = urllib.parse.urlencode({"course": "CS 4641",
+                                       "section": "A",
+                                       "semester": "spring",
+                                       "year": "2015",
+                                       "rating": "5"})
+        with patch(get_current_user_func_path) as auth:
+            auth.return_value = b'"tester"'
+            response = self.fetch("/rate", method="POST", body=body)
+            self.assertIn(b"There was an error adding your rating.", response.body)
+            with Query(self._app.db) as q:
+                rating = q.query(self._app.db.rating).all()
+            self.assertEqual(len(rating), 0)
+
+    def test_fail_section_name_and_course_not_found(self):
+        """Test failure if rating a non-existent section (name) and course."""
         self.register()
         self.login()
         body = urllib.parse.urlencode({"name": "MATH-4150",
                                        "section": "XXX",
                                        "semester": "spring",
+                                       "year": "2016",
                                        "rating": "5"})
         with patch(get_current_user_func_path) as auth:
             auth.return_value = b'"tester"'
             response = self.fetch("/rate", method="POST", body=body)
-            self.assertEqual(self.fetch("/rate").body, response.body)
+            self.assertIn(b"There was an error adding your rating.", response.body)
+            with Query(self._app.db) as q:
+                rating = q.query(self._app.db.rating).all()
+            self.assertEqual(len(rating), 0)
+
+
+    def test_fail_section_year_and_course_not_found(self):
+        """Test failure if rating a non-existent section (year) and course."""
+        self.register()
+        self.login()
+        body = urllib.parse.urlencode({"name": "MATH-4150",
+                                       "section": "A",
+                                       "semester": "spring",
+                                       "year": "2015",
+                                       "rating": "5"})
+        with patch(get_current_user_func_path) as auth:
+            auth.return_value = b'"tester"'
+            response = self.fetch("/rate", method="POST", body=body)
+            self.assertIn(b"There was an error adding your rating.", response.body)
+            with Query(self._app.db) as q:
+                rating = q.query(self._app.db.rating).all()
+            self.assertEqual(len(rating), 0)
+
+    def test_fail_section_name_year_and_course_not_found(self):
+        """Test failure if rating a non-existent section (n/yr) and course."""
+        self.register()
+        self.login()
+        body = urllib.parse.urlencode({"name": "MATH-4150",
+                                       "section": "XXX",
+                                       "semester": "spring",
+                                       "year": "2015",
+                                       "rating": "5"})
+        with patch(get_current_user_func_path) as auth:
+            auth.return_value = b'"tester"'
+            response = self.fetch("/rate", method="POST", body=body)
+            self.assertIn(b"There was an error adding your rating.", response.body)
             with Query(self._app.db) as q:
                 rating = q.query(self._app.db.rating).all()
             self.assertEqual(len(rating), 0)
@@ -123,14 +180,16 @@ class TestRatings(AsyncHTTPTestCase):
         """Tests for all types of invalid rating formdata coming in.
         These should be detected by the RateForm validator. The invalid types
         are:
-            1. rating too high (> 5),
-            2. rating too low  (< 1),
-            3. rating not extant,
-            4. name too short (< 5),
-            5. name too long  (> 30),
-            6. name not extant,
-            7. section name too short / not extant, and
-            8. section name too long (> 4).
+            01. rating too high (> 5),
+            02. rating too low  (< 1),
+            03. rating not extant,
+            04. name too short (< 5),
+            05. name too long  (> 30),
+            06. name not extant,
+            07. section name too short / not extant,
+            08. section name too long (> 4),
+            09. year too high (> current year)
+            10. year too low  (< 1970)
 
         In each case, we want to go back to a blank 'rate' page. Finally, we
         then wish to assert that nothing was added to the database from these
@@ -140,35 +199,45 @@ class TestRatings(AsyncHTTPTestCase):
         self.login()
         rate_body = self.fetch("/rate").body
 
+        cur_year = datetime.datetime.now().year
+
         invalid_forms = [
             {"name": "CS-4641", "section": "A",
-             "semester": "spring", "rating": "6"},
+                "semester": "spring", "rating": "6", "year": "2016"},
 
             {"name": "CS-4641", "section": "A",
-             "semester": "spring", "rating": "0"},
+             "semester": "spring", "rating": "0", "year": "2016"},
 
             {"name": "CS-4641", "section": "A",
-             "semester": "spring", "rating": ""},
+             "semester": "spring", "rating": "", "year": "2016"},
 
             {"name": "C", "section": "A",
-             "semester": "spring", "rating": "3"},
+             "semester": "spring", "rating": "3", "year": "2016"},
 
             {"name": "CS-0123456789abcdefghijklmnopqr", "section": "A",
-             "semester": "spring ", "rating": "3"},
+             "semester": "spring ", "rating": "3", "year": "2016"},
 
             {"name": "", "section": "A",
-             "semester": "spring", "rating": "3"},
+             "semester": "spring", "rating": "3", "year": "2016"},
 
             {"name": "CS-4641", "section": "",
-             "semester": "spring", "rating": "3"},
+             "semester": "spring", "rating": "3", "year": "2016"},
 
             {"name": "CS-4641", "section": "A 123456789",
-             "semester": "spring", "rating": "3"}
+             "semester": "spring", "rating": "3", "year": "2016"},
+
+            {"name": "CS-4641", "section": "A",
+             "semester": "spring", "rating": "3", "year": str(cur_year + 1)},
+
+            {"name": "CS-4641", "section": "A",
+             "semester": "spring", "rating": "3", "year": "1969"}
         ]
-        # iterate over all forms, returning to register page each time
-        for form in invalid_forms:
-            response = self.post_form(form)
-            self.assertEqual(rate_body, response.body)
+        with patch(get_current_user_func_path) as auth:
+            auth.return_value = b'"tester"'
+            # iterate over all forms, returning to register page each time
+            for form in invalid_forms:
+                response = self.post_form(form)
+                self.assertIn(b"There was an error adding your rating.", response.body)
 
         # assert that nothing was added to database from all attempts
         with Query(self._app.db) as q:

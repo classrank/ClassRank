@@ -2,7 +2,6 @@ import tornado.web
 
 import classrank.database.wrapper as db
 
-
 class ClassRankApp(tornado.web.Application):
     def __init__(self, db_connection: str or None, *args, **kwargs):
         """
@@ -16,6 +15,5 @@ class ClassRankApp(tornado.web.Application):
             self.db = db.Database()
         else:
             self.db = db.Database(db_connection)
-
 
 settings = {'debug': False,}

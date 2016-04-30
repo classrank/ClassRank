@@ -134,19 +134,3 @@ class TestWrapper(unittest.TestCase):
 
     def tearDown(self):
         self.db.metadata.drop_all()
-
-
-class TestDatabaseFile(unittest.TestCase):
-    def setUp(self):
-        os.mkdir("temp")
-        self.db = Database(engine="sqlite:///temp/test.db")
-
-    def test_db_in_file(self):
-        with Query(self.db) as q:
-            q.add(School(name="Gatech", abbreviation="GT"))
-
-        with Query(self.db) as q:
-            self.assertEqual(q.query(School).one().name, "Gatech")
-
-    def tearDown(self):
-        shutil.rmtree("temp")

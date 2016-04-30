@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, LargeBinary, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.session import Session
 
 Base = declarative_base()  # single base class instance for joins
 
@@ -55,6 +56,12 @@ class Student(Base):
     user_id = Column(Integer, ForeignKey("account.uid"), nullable=False)
     sections = relationship('Section', secondary='rating', backref='student')
 
+    @property
+    def courses(self):
+        session = Session.object_session(self)
+        return session.query(Course).join(Section).filter(Section.uid.in_(
+            section.uid for section in self.sections)).all()
+
 
 class Faculty(Base):
     __tablename__ = "faculty"
@@ -95,11 +102,17 @@ class Section(Base):
     name = Column(String(16))
     crn = Column(Integer)
 
+    def __repr__(self):
+        return "<Section: {}, {}>".format(self.course.name, self.name)
+
 
 class Rating(Base):
     __tablename__ = "rating"
     student_id = Column(Integer, ForeignKey('student.uid'), primary_key=True)
     section_id = Column(Integer, ForeignKey('section.uid'), primary_key=True)
     rating = Column(Integer, nullable=True)
+    difficulty = Column(Integer, nullable=True)
+    workload = Column(Integer, nullable=True)
+    grade = Column(Integer, nullable=True)
     section = relationship('Section', backref='ratings')
     student = relationship('Student', backref='ratings')

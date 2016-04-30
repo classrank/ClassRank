@@ -16,6 +16,7 @@
                         {"name": "About", "url": "about"},
                         {"name": "Privacy", "url": "privacy"},
                         {"name": "Security", "url": "security"},
+                        {"name": "Register", "url": "register"},
                         {"name": "Log In", "url": "login"}
                     ],
     "login_url": "/login",

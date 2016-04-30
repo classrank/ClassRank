@@ -1,23 +1,19 @@
 {% extends base.html %}
 
 {% block content %}
-
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+    There was an error adding your rating.
+    </div>
+    {% end %}
 <form action='/rate' method='post'>
     <fieldset class='form-group'>
 
         <div class="form-group row">
-          <label for="course_subject_form" class="col-sm-2 form-control-label">Course Name</label>
+          <label for="course_form" class="col-sm-2 form-control-label">Course</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="course_subject_form"
-                   placeholder="CS" name='subject'>
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <label for="course_number_form" class="col-sm-2 form-control-label">Course Name</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="course_number_form"
-                   placeholder="1331" name='number'>
+            <input type="text" class="form-control" id="course_form"
+                   placeholder="CS 1331" name='course'>
           </div>
         </div>
 
@@ -39,6 +35,14 @@
       </div>
 
       <div class="form-group row">
+        <label for="course_rating_form" class="col-sm-2 form-control-label">Year</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="course_rating_form"
+                 placeholder="2016" name='year'>
+        </div>
+      </div>
+
+      <div class="form-group row">
         <label for="course_rating_form" class="col-sm-2 form-control-label">Rating</label>
         <div class="col-sm-10">
           <input type="text" class="form-control" id="course_rating_form"
@@ -54,4 +58,10 @@
   </fieldset>
 </form>
 
+<script type="text/javascript">
+$('#course_form').autocomplete({
+    serviceUrl: '/api/autocomplete/courses',
+    dataType: 'json',
+});
+</script>
 {% end %}
