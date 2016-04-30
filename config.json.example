@@ -2,6 +2,7 @@
     "autoreload": true,
     "debug": true,
     "cookie_secret": "This is actually a secret cookie!986425&(!@",
+    "grouch_results": "classrank/grouch/results.txt.example",
     "logged_in_pages": [
                         {"name": "Dashboard", "url": "dashboard"},
                         {"name": "Search", "url": "search"},

@@ -17,7 +17,9 @@ class ClassRankApp(tornado.web.Application):
         else:
             self.db = db.Database(db_connection)
 
-        grouch.add_to_database("classrank/grouch/result.txt", self.db)
+        print(self.settings.keys())
+
+        grouch.add_to_database(self.settings['grouch_results'], self.db)
 
 
 settings = {'debug': False,}
