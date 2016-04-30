@@ -3,11 +3,11 @@
 #Table of Contents
 
 1. Release notes
-2. Installation instructions
+2. Installation Instructions
 3. User manual
 4. Repository information
 
-#2 Installation instructions
+#2 Installation Instructions
 Here's the basic install outline:
 
 1. install Python2, Python3, and the dependencies of ClassRank
@@ -35,6 +35,23 @@ script on a bash-enabled machine (best to run on a Unix-like [linux, OSX]).
       `brew install homebrew/python/scipy`. If this fails to work, you can also
        use Anaconda
 9. install the rest of the dependencies: `pip install -r requirements.txt`
+
+##2.2 Installing, Running, and Deleting Grouch
+
+1. run the following command (note, this will take approximate ~10 minutes):
+   `bash classrank/grouch/run_grouch.sh`
+
+##2.3 Starting the server
+Note: if you want to tweak the server settings to your liking, create a file
+`config.json`, and have classrank.py look to it for settings. See
+`config.json.example` for an example document. For exploratory running of the
+server, this is not necessary.
+
+1. run the following commans (note, this will take approximately ~5 minutes):
+   `python3 classrank.py`
+
+After the server tells you "Database import complete" (or something along those
+lines), navigate to localhost:8000, and see ClassRank go.
 
 [0]: https://github.com/classrank/ClassRank
 [1]: https://www.python.org
