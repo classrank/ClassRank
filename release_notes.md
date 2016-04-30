@@ -7,8 +7,24 @@
 3. User manual
 4. Repository information
 
+#1 Release Notes
+
+ - Version Number: 1.0.0
+ - Status: Beta Release
+ - Known Bugs:
+    - Default settings have the system in debug mode by default, this leads to
+      security vulnerabilities 
+    - Certain pages do not have complete error handling so they fall into
+      the debug output and do not use in-application handling
+    - There are some unimplemented pages (professor view, privacy policy, etc.)
+    - There will be numerical instabilities with a large number of users due
+      to a missing bounds check in the code that decides the number of latent
+      factors
+
+
 #2 Installation Instructions
-Here's the basic install outline:
+
+Here is the basic install outline:
 
 1. install Python2, Python3, and the dependencies of ClassRank
 2. run a script that installs Grouch, runs Grouch, and deletes Grouch
@@ -52,6 +68,16 @@ server, this is not necessary.
 
 After the server tells you "Database import complete" (or something along those
 lines), navigate to localhost:8000, and see ClassRank go.
+
+#3 User Guide
+
+Once the application is live, you can visit it in a web browser. Do so, then
+register an account and log in. After that, rate courses on the course rate
+screen, and view predictions based on the ratings made by other users.
+
+#4 Repository Information
+[ClassRank](https://github.com/classrank/ClassRank) and
+[Grouch](https://github.com/classrank/Grouch)
 
 [0]: https://github.com/classrank/ClassRank
 [1]: https://www.python.org
