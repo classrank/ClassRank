@@ -28,7 +28,6 @@ if __name__ == "__main__":
         "static_path": os.path.join(os.path.dirname(__file__), "classrank/static"),
         "template_path": os.path.join(os.path.dirname(__file__), "classrank/templates")
     }
-    app.settings['debug'] = args.debug
 
     try:
         with open(args.settings) as f:
@@ -37,6 +36,7 @@ if __name__ == "__main__":
         # no additional settings file so we ignore
         pass
 
+    settings['debug'] == args.debug
     db_config = settings['db_config']
     del settings['db_config']
     cr = ClassRankApp(args.connection, routes, **settings)
