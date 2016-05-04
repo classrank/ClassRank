@@ -37,17 +37,8 @@ if __name__ == "__main__":
         pass
 
     settings['debug'] == args.debug
-    db_config = settings['db_config']
-    del settings['db_config']
     cr = ClassRankApp(args.connection, routes, **settings)
-    try:
-        with Query(cr.db) as q:
-            for table in db_config:
-                for item in db_config[table]:
-                    q.add(cr.db.__getattribute__(table)(**item))
-    except IntegrityError as e:
-        print(e)
-
 
     cr.listen(args.port)
+    print("ClassRank now running at http://localhost:{}".format(args.port))
     tornado.ioloop.IOLoop.current().start()

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 
+<link rel="icon" type="/image/png" href="/static/favicon.ico">
+
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -9,15 +11,19 @@
         {% include 'css.html' %}
         <title>ClassRank</title>
     </head>
-    <body style="background-color:rgba(200,200,200,255)">
+    <body>
         <div class="container vertical-center">
-                <div class="jumbotron jumbotron-fluid minwidth">
-                    <h1 class="display-2">ClassRank</h1>
+            <div class="jumbotron minwidth">
+                <h1 class="display-2">ClassRank</h1>
 
-                    <p class="text-xs-center"><a href="login">Login</a> | <a href="register">Register</a></p>
-
-                    <p class="text-xs-center"><a href="privacy">Privacy</a> | <a href="security">Security</a> | <a href="about">About</a></p>
-                </div>
+                <p class="text-xs-center">
+                    <a href="login" class="btn btn-default" role="button">Login</a>
+                    <a href="register" class="btn btn-primary" role="button">Register</a>
+                    <a href="about" class="btn btn-primary" role="button">About</a>
+                    <a href="privacy" class="btn btn-primary" role="button">Privacy</a>
+                    <a href="security" class="btn btn-primary" role="button">Security</a>
+                </p>
+            </div>
         </div>
     </body>
 </html>

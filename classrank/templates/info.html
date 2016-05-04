@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        {% include 'js.html' %}
+        {% include 'css.html' %}
+        <title>ClassRank - About</title>
+    </head>
+    <body>
+        <div class="container vertical-center">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <h1 class="display-4">ClassRank <small class="faded">{{subtitle}}</small></h1>
+                    {% for paragraph in paragraphs %}
+                        <p>{{paragraph}}</p>
+                    {% end %}
+                    [<a href="/">home</a>]
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+    </body>
+</html>

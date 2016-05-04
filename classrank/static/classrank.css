@@ -12,6 +12,10 @@ min-width: 640px;
 text-align: center;
 }
 
+.faded { /* Gives a grey, faded appearance */
+    color: grey;
+}
+
 /* default styling for autocomplete */
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
 .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
